@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "195070202645",
+    "project_id": "medical-c931e",
+    "storage_bucket": "medical-c931e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195070202645:android:64a021fa84603af5110f1c",
+        "android_client_info": {
+          "package_name": "com.hanif.medical"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195070202645-0d5npb98ede9vh5qg971oph18vp850kk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlk5sSx38qIG4u_Kw1cNiJIkf1p5cqS48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195070202645-0d5npb98ede9vh5qg971oph18vp850kk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
