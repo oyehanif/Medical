@@ -5,7 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.hanif.medical.navigation.BottomNavigation
 import com.hanif.medical.navigation.SetupNavGraph
 import com.hanif.medical.ui.theme.MedicalTheme
 import com.hanif.medical.viewmodel.SplashViewModel
@@ -41,7 +44,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    SetupNavGraph(navController = navController, startDestination = startDestination)
+                    Scaffold(bottomBar = { BottomNavigation(navController = navController) }) {
+                        Modifier.padding(it)
+                        SetupNavGraph(
+                            navController = navController,
+                            startDestination = startDestination
+                        )
+                    }
                 }
             }
         }

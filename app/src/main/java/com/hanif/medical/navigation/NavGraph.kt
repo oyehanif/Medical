@@ -11,6 +11,10 @@ import com.hanif.medical.Screens.HomeScreen
 import com.hanif.medical.Screens.LoginScreen
 import com.hanif.medical.Screens.RegisterScreen
 import com.hanif.medical.Screens.WelcomeScreen
+import com.hanif.medical.Screens.bottom.HomeBot
+import com.hanif.medical.Screens.bottom.Notifications
+import com.hanif.medical.Screens.bottom.Report
+import com.hanif.medical.Screens.bottom.Schedule
 
 
 @ExperimentalAnimationApi
@@ -41,6 +45,21 @@ fun SetupNavGraph(
 
         composable(route = Screen.ForgetPassword.route) {
             ForgetPasswordScreen(navController = navController)
+        }
+
+        composable(route = BottomNavigationScreens.HomeBot.route) {
+            HomeScreen()
+        }
+
+        composable(route = BottomNavigationScreens.Schedule.route) {
+            Schedule()
+        }
+
+        composable(route = BottomNavigationScreens.Report.route) {
+            Report()
+        }
+        composable(route = BottomNavigationScreens.Notifications.route) {
+            Notifications()
         }
     }
 }

@@ -92,8 +92,13 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
 
     //matrial3
-    def material3_version = "1.0.1"
-    implementation "androidx.compose.material3:material3:$material3_version"
+    def material3_version = ""
+    implementation "androidx.compose.material3:material3:1.0.1"
+
+    //pager
+    implementation 'com.google.accompanist:accompanist-pager:0.30.1'
+
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
     //firebase
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
