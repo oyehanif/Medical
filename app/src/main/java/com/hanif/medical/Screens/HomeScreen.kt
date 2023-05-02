@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -26,6 +28,9 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -97,47 +103,6 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                         .padding(10.dp)
                 )
             }
-
-            //Search Filed
-            val (value, onValueChange) = remember { mutableStateOf("") }
-
-            Spacer(modifier = Modifier.height(10.dp))
-            TextField(
-                value = value,
-                onValueChange = onValueChange,
-                textStyle = TextStyle(fontSize = 17.sp),
-                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(SimplePurple)
-                    .clip(RoundedCornerShape(16.dp)),
-                placeholder = { Text(text = "") },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.DarkGray
-                )
-            )
-
-            /*Services*/
-            Text(
-                text = "Services",
-                Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth(), textAlign = TextAlign.Start
-            )
-            Row(
-                modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BaseServiceComp(R.drawable.doctor, {})
-                BaseServiceComp(R.drawable.medicine, {})
-                BaseServiceComp(R.drawable.medical_report, {})
-                BaseServiceComp(R.drawable.covid, {})
-            }
-
             //auto Slide banner
             val images = listOf(
                 "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
@@ -165,6 +130,79 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                     }
                 )
             }
+
+            /*//Search Filed
+            val (value, onValueChange) = remember { mutableStateOf("") }
+
+            Spacer(modifier = Modifier.height(10.dp))
+            TextField(
+                value = value,
+                onValueChange = onValueChange,
+                textStyle = TextStyle(fontSize = 17.sp),
+                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(SimplePurple)
+                    .clip(RoundedCornerShape(16.dp)),
+                placeholder = { Text(text = "") },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = Color.DarkGray
+                )
+            )
+*/
+            //Specialist
+            Text(
+                text = "Specialist",
+                Modifier
+                    .padding(vertical = 10.dp)
+                    .fillMaxWidth(), textAlign = TextAlign.Start
+            )
+
+            val list = listOf(
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+                chipModel("Cardiologist", R.drawable.cardiologist),
+                chipModel("Order Medicine", R.drawable.order_medecine),
+            )
+            LazyRow() {
+                items(list){
+                    CommonChip(it ,{})
+                }
+            }
+
+            /*Services*/
+            Text(
+                text = "Our Services",
+                Modifier
+                    .padding(vertical = 10.dp)
+                    .fillMaxWidth(), textAlign = TextAlign.Start
+            )
+            Row(
+                modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                BaseServiceComp(R.drawable.doctor, {})
+                BaseServiceComp(R.drawable.medicine, {})
+                BaseServiceComp(R.drawable.medical_report, {})
+                BaseServiceComp(R.drawable.covid, {})
+            }
+
 
             /*Top Doctors*/
             Text(
@@ -264,12 +302,13 @@ fun AutoSlidingCarousel(
 @Composable
 fun BaseServiceComp(@DrawableRes image: Int, onClick: () -> Unit) { //
     Image(
-        painter = painterResource(id = R.drawable.doctor), contentDescription = "", Modifier
+        painter = painterResource(id = image), contentDescription = "", Modifier
             .border(
                 1.dp,
                 Color.Gray, shape = RoundedCornerShape(20)
             )
             .padding(20.dp)
+            .clickable { onClick() }
     )
 }
 
@@ -283,9 +322,71 @@ fun HomeScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
+fun UpcomingSeactionItem() {
+    Card(Modifier.padding(20.dp)) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+        ) {
+            Column(
+                Modifier
+                    .weight(.2f)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(40)),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "12",
+                    maxLines = 1,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "TUE",
+                    fontSize = 16.sp,
+                )
+            }
+            Column(
+                Modifier
+                    .weight(.7f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.Start
+            ) {
+
+                Text(
+                    text = "9:30 AM",
+                    maxLines = 1,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = "Nikola",
+                    maxLines = 1, fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(text = "Deprecation")
+            }
+        }
+    }
+}
+
+//@Preview(showBackground = true)
+@Composable
 fun Item_Doctor() {
     Row(
-        Modifier.fillMaxWidth().height(100.dp),
+        Modifier
+            .fillMaxWidth()
+            .height(100.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -294,11 +395,16 @@ fun Item_Doctor() {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .padding(10.dp)                     // clip to the circle shape
-                .border(1.dp, Color.Gray,RoundedCornerShape(20))
+                .border(1.dp, Color.Gray, RoundedCornerShape(20))
                 .weight(.3f)   // add a border (optional)
         )
 
-        Column(Modifier.padding(vertical = 10.dp).weight(.6f).fillMaxHeight()) {
+        Column(
+            Modifier
+                .padding(vertical = 10.dp)
+                .weight(.6f)
+                .fillMaxHeight()
+        ) {
             Text(
                 text = "Dr. Hanif Shaikh",
                 maxLines = 1,
@@ -312,3 +418,22 @@ fun Item_Doctor() {
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CommonChip(item :chipModel, onClick: () -> Unit) {
+    AssistChip(
+        onClick = { onClick() },
+        label = { Text(item.name) },
+        leadingIcon = {
+            Image(
+                painter = painterResource(id = item.image),
+                contentDescription = item.name,
+                Modifier.size(AssistChipDefaults.IconSize)
+            )
+        }
+    )
+
+}
+
+data class chipModel(val name: String, val image: Int)
