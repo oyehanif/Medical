@@ -27,31 +27,21 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,18 +49,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.hanif.medical.R
-import com.hanif.medical.models.OnBoardingPage
+import com.hanif.medical.models.ListOfCategories
+import com.hanif.medical.models.SubsCategories
 import com.hanif.medical.ui.theme.SimplePurple
+import com.hanif.medical.utils.graphs.UIEvent
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController, modifier: Modifier = Modifier
+) {
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = modifier
@@ -178,9 +174,13 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 chipModel("Cardiologist", R.drawable.cardiologist),
                 chipModel("Order Medicine", R.drawable.order_medecine),
             )
+            val itemList = remember {
+                ListOfCategories()
+            }
+
             LazyRow() {
-                items(list){
-                    CommonChip(it ,{})
+                items(itemList.itemDataList, key = { it.categories }) {
+                    CommonChip(it, itemList::onItemSelected)
                 }
             }
 
@@ -312,14 +312,6 @@ fun BaseServiceComp(@DrawableRes image: Int, onClick: () -> Unit) { //
     )
 }
 
-@Composable
-@Preview(showBackground = true)
-fun HomeScreenPreview() {
-    Column(modifier = Modifier.fillMaxSize()) {
-        HomeScreen()
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun UpcomingSeactionItem() {
@@ -421,17 +413,18 @@ fun Item_Doctor() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonChip(item :chipModel, onClick: () -> Unit) {
+fun CommonChip(subsCategories: SubsCategories, onSelectChanged: (SubsCategories) -> Unit) {
     AssistChip(
-        onClick = { onClick() },
-        label = { Text(item.name) },
-        leadingIcon = {
+        onClick = { onSelectChanged(subsCategories.copy(isSelected = !subsCategories.isSelected)) },
+
+        label = { Text(subsCategories.categories) },
+        /*leadingIcon = {
             Image(
-                painter = painterResource(id = item.image),
+                painter = painterResource(id = subsCategories.categories.image),
                 contentDescription = item.name,
                 Modifier.size(AssistChipDefaults.IconSize)
             )
-        }
+        }*/
     )
 
 }

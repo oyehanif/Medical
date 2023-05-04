@@ -16,15 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.hanif.medical.navigation.BottomNavigation
-import com.hanif.medical.navigation.SetupNavGraph
 import com.hanif.medical.ui.theme.MedicalTheme
+import com.hanif.medical.utils.graphs.RootNavigationGraph
 import com.hanif.medical.viewmodel.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalPagerApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -39,7 +36,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MedicalTheme {
                 val startDestination by splashViewModel.startDestination
-                Surface(
+                /*Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
@@ -51,7 +48,8 @@ class MainActivity : ComponentActivity() {
                             startDestination = startDestination
                         )
                     }
-                }
+                }*/
+                RootNavigationGraph(navController = rememberNavController(), 0)
             }
         }
     }

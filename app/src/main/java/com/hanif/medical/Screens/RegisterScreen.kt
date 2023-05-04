@@ -39,11 +39,16 @@ import com.hanif.medical.R
 import com.hanif.medical.models.Resource
 import com.hanif.medical.navigation.Screen
 import com.hanif.medical.utils.CustomSpacer
+import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.AuthViewModel
 import java.util.Locale
 
 @Composable
-fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = hiltViewModel()) {
+fun RegisterScreen(
+    onPopBackStack: () -> Unit,
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController, viewModel: AuthViewModel = hiltViewModel()
+) {
 
     val registerResult = viewModel.registerFlow.collectAsState()
 
@@ -99,7 +104,7 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = hilt
         CommonButton("Register", modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
-                viewModel.register(name, email.lowercase(Locale.ROOT), phone, password)
+            viewModel.register(name, email.lowercase(Locale.ROOT), phone, password)
         })
 
 
@@ -113,12 +118,12 @@ fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = hilt
         )
 
         registerResult.value?.let {
-            when(it){
-                is Resource.Error -> Log.e("TAG", "RegisterScreen: ${it.error}", )
+            when (it) {
+                is Resource.Error -> Log.e("TAG", "RegisterScreen: ${it.error}")
                 is Resource.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 is Resource.Success -> {
-                    Log.e("TAG", "RegisterScreen: successfully", )
-                    navController.navigateUp()
+                    Log.e("TAG", "RegisterScreen: successfully")
+                    onPopBackStack()
                 }
             }
         }

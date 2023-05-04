@@ -19,18 +19,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.*
 import com.hanif.medical.models.OnBoardingPage
 import com.hanif.medical.navigation.Screen
+import com.hanif.medical.utils.graphs.AuthScreen
+import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.WelcomeViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @ExperimentalAnimationApi
-@ExperimentalPagerApi
 @Composable
 fun WelcomeScreen(
-    navController: NavHostController,
+    onNavigate: (UIEvent.Navigate) -> Unit, navController: NavController,
+
     welcomeViewModel: WelcomeViewModel = hiltViewModel()
 ) {
 
@@ -58,12 +61,11 @@ fun WelcomeScreen(
                 .weight(1f),
             pagerState = pagerState
         )
-        
+
         FinishButton(modifier = Modifier.weight(1f), pagerState = pagerState) {
             welcomeViewModel.saveOnBoardingState(complete = true)
             navController.popBackStack()
-            navController.navigate(Screen.Login.route)
-//            navController.navigate(Screen.Home.route)
+            onNavigate(UIEvent.Navigate(AuthScreen.Login.route))
         }
     }
 }
@@ -104,8 +106,6 @@ fun PagerScreen(onBoardingPage: OnBoardingPage) {
     }
 }
 
-@ExperimentalAnimationApi
-@ExperimentalPagerApi
 @Composable
 fun FinishButton(
     modifier: Modifier,

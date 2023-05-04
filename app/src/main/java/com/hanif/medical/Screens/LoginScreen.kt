@@ -41,11 +41,18 @@ import androidx.navigation.NavController
 import com.hanif.medical.models.Resource
 import com.hanif.medical.navigation.Screen
 import com.hanif.medical.utils.CustomSpacer
+import com.hanif.medical.utils.graphs.AuthScreen
+import com.hanif.medical.utils.graphs.Graph
+import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.AuthViewModel
 
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: AuthViewModel = hiltViewModel()) {
+fun LoginScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
 
     val loginResult = viewModel.loginFlow.collectAsStateWithLifecycle()
 
@@ -101,7 +108,7 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = hiltVie
         CommonButton("Login", modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
-                viewModel.login(email, password)
+            viewModel.login(email, password)
         })
 
         Text(text = "Forgot the password ?",
@@ -111,24 +118,26 @@ fun LoginScreen(navController: NavController, viewModel: AuthViewModel = hiltVie
 
 
 
-            MultiStyleText(
-                "Don't have an account? \t",
-                Color.Gray,
-                "SignUp",
-                color2 = Color.Blue,
-                Modifier
-                    .clickable { navController.navigate(Screen.Register.route)},
-            )
+        MultiStyleText(
+            "Don't have an account? \t",
+            Color.Gray,
+            "SignUp",
+            color2 = Color.Blue,
+            Modifier
+                .clickable {onNavigate(UIEvent.Navigate(AuthScreen.SignUp.route)) },
+        )
 
         loginResult.value?.let {
-            when(it){
-                is Resource.Error -> Log.e("TAG", "LoginScreen: ${it.error}", )
+            when (it) {
+                is Resource.Error -> Log.e("TAG", "LoginScreen: ${it.error}")
                 is Resource.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 is Resource.Success -> {
-                    LaunchedEffect(Unit){
-                        navController.navigate(Screen.Home.route){
-                            popUpTo(Screen.Home.route) { inclusive =true }
-                        }
+                    LaunchedEffect(Unit) {
+                        /*navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }*/
+
+                        onNavigate(UIEvent.Navigate(Graph.HOME))
                     }
                 }
             }

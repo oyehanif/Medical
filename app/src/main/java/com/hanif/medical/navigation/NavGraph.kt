@@ -17,6 +17,7 @@ import com.hanif.medical.Screens.bottom.Report
 import com.hanif.medical.Screens.bottom.Schedule
 
 
+/*
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
@@ -62,4 +63,4 @@ fun SetupNavGraph(
             Notifications()
         }
     }
-}
+}*/
