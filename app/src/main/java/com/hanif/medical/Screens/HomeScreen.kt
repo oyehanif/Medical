@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -28,6 +29,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
@@ -40,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,14 +51,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.hanif.medical.R
 import com.hanif.medical.models.ListOfCategories
 import com.hanif.medical.models.SubsCategories
+import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.ui.theme.SimplePurple
+import com.hanif.medical.utils.Routes
+import com.hanif.medical.utils.Routes.ALL_DOCTOR_SCREEN
+import com.hanif.medical.utils.Routes.REPORT_SCREEN
+import com.hanif.medical.utils.Routes.SHOPPING_SCREEN
 import com.hanif.medical.utils.graphs.UIEvent
 import kotlinx.coroutines.delay
 
@@ -85,6 +89,7 @@ fun HomeScreen(
                     Text(text = "\uD83D\uDC4B Hello!")
                     Text(
                         text = "Hanif Shaikh",
+                        fontFamily = DMSans,
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.h4
                     )
@@ -101,11 +106,10 @@ fun HomeScreen(
             }
             //auto Slide banner
             val images = listOf(
-                "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-                "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-                "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-                "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-                "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
+                R.drawable.img_5,
+                R.drawable.img_2,
+                R.drawable.img_3,
+                R.drawable.img_4,
             )
 
             Card(
@@ -115,10 +119,16 @@ fun HomeScreen(
                 AutoSlidingCarousel(
                     itemsCount = images.size,
                     itemContent = { index ->
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(images[index])
-                                .build(),
+                        /* AsyncImage(
+                             model = ImageRequest.Builder(LocalContext.current)
+                                 .data(images[index])
+                                 .build(),
+                             contentDescription = null,
+                             contentScale = ContentScale.Crop,
+                             modifier = Modifier.height(200.dp)
+                         )*/
+                        Image(
+                            painterResource(id = images[index]),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.height(200.dp)
@@ -153,27 +163,12 @@ fun HomeScreen(
                 text = "Specialist",
                 Modifier
                     .padding(vertical = 10.dp)
-                    .fillMaxWidth(), textAlign = TextAlign.Start
+                    .fillMaxWidth(), textAlign = TextAlign.Start,
+
+                fontFamily = DMSans, fontWeight = FontWeight.Bold
             )
 
-            val list = listOf(
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-                chipModel("Cardiologist", R.drawable.cardiologist),
-                chipModel("Order Medicine", R.drawable.order_medecine),
-            )
+
             val itemList = remember {
                 ListOfCategories()
             }
@@ -189,7 +184,9 @@ fun HomeScreen(
                 text = "Our Services",
                 Modifier
                     .padding(vertical = 10.dp)
-                    .fillMaxWidth(), textAlign = TextAlign.Start
+                    .fillMaxWidth(), textAlign = TextAlign.Start,
+
+                fontFamily = DMSans, fontWeight = FontWeight.Bold
             )
             Row(
                 modifier
@@ -197,12 +194,38 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BaseServiceComp(R.drawable.doctor, {})
-                BaseServiceComp(R.drawable.medicine, {})
-                BaseServiceComp(R.drawable.medical_report, {})
-                BaseServiceComp(R.drawable.covid, {})
+                BaseServiceComp(R.drawable.doctor){
+                    onNavigate(
+                        UIEvent.Navigate(
+                            ALL_DOCTOR_SCREEN
+                        )
+                    )
+                }
+                BaseServiceComp(R.drawable.medicine, )
+                {
+                    onNavigate(
+                        UIEvent.Navigate(
+                            SHOPPING_SCREEN
+                        )
+                    )
+                }
+                BaseServiceComp(R.drawable.medical_report) {
+                    onNavigate(
+                        UIEvent.Navigate(
+                            REPORT_SCREEN
+                        )
+                    )
+                }
+                BaseServiceComp(R.drawable.baseline_shopping_cart_24){
+                    onNavigate(
+                        UIEvent.Navigate(
+                            SHOPPING_SCREEN
+                        )
+                    )
+                }
             }
 
+            Spacer(modifier = modifier.height(10.dp))
 
             /*Top Doctors*/
             Text(
@@ -211,7 +234,19 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .size(30.dp),
                 textAlign = TextAlign.Start,
+
+                fontFamily = DMSans, fontWeight = FontWeight.Bold
             )
+            Spacer(modifier = modifier.height(10.dp))
+
+            LazyColumn()
+            {
+                items(10) {
+                    DoctorItem {
+                        onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
+                    }
+                }
+            }
         }
     }
 }
@@ -260,7 +295,7 @@ fun IndicatorDot(
 @Composable
 fun AutoSlidingCarousel(
     modifier: Modifier = Modifier,
-    autoSlideDuration: Long = 2000L,
+    autoSlideDuration: Long = 5000L,
     pagerState: PagerState = remember { PagerState() },
     itemsCount: Int,
     itemContent: @Composable (index: Int) -> Unit,
@@ -414,19 +449,17 @@ fun Item_Doctor() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommonChip(subsCategories: SubsCategories, onSelectChanged: (SubsCategories) -> Unit) {
-    AssistChip(
+    AssistChip(modifier = Modifier.padding(end = 8.dp),
         onClick = { onSelectChanged(subsCategories.copy(isSelected = !subsCategories.isSelected)) },
-
         label = { Text(subsCategories.categories) },
-        /*leadingIcon = {
+        leadingIcon = {
             Image(
-                painter = painterResource(id = subsCategories.categories.image),
-                contentDescription = item.name,
+                painter = painterResource(id = subsCategories.image),
+                contentDescription = subsCategories.categories,
                 Modifier.size(AssistChipDefaults.IconSize)
             )
-        }*/
+        }
     )
 
 }
 
-data class chipModel(val name: String, val image: Int)

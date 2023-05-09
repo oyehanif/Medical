@@ -11,6 +11,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,6 +46,7 @@ import com.hanif.medical.utils.graphs.AuthScreen
 import com.hanif.medical.utils.graphs.Graph
 import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.AuthViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -55,7 +57,7 @@ fun LoginScreen(
 ) {
 
     val loginResult = viewModel.loginFlow.collectAsStateWithLifecycle()
-
+    val scaffoldState = rememberScaffoldState()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         var isRemeber by rememberSaveable {
             mutableStateOf(false)
@@ -113,7 +115,7 @@ fun LoginScreen(
 
         Text(text = "Forgot the password ?",
             Modifier
-                .clickable { navController.navigate(Screen.ForgetPassword.route) }
+                .clickable { navController.navigate(AuthScreen.ForgetPassword.route) }
                 .padding(top = 10.dp))
 
 
@@ -127,9 +129,17 @@ fun LoginScreen(
                 .clickable {onNavigate(UIEvent.Navigate(AuthScreen.SignUp.route)) },
         )
 
+        val scope = rememberCoroutineScope()
         loginResult.value?.let {
             when (it) {
-                is Resource.Error -> Log.e("TAG", "LoginScreen: ${it.error}")
+
+                is Resource.Error -> {
+                    scope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(
+                            message = it.error.toString(),
+                        )
+                    }
+                }
                 is Resource.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 is Resource.Success -> {
                     LaunchedEffect(Unit) {

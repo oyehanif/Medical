@@ -65,6 +65,7 @@ import androidx.navigation.NavController
 import com.hanif.medical.R
 import com.hanif.medical.models.ListOfCategories
 import com.hanif.medical.models.SubsCategories
+import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
 
 
@@ -81,8 +82,8 @@ fun AllDoctorScreen(
         Text(
             text = "Doctors Category's",
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Start
+            modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Start,
+          fontSize = 20.sp,
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -101,7 +102,9 @@ fun AllDoctorScreen(
 
         LazyColumn() {
             items(20) {
-                DoctorItem()
+                DoctorItem {
+                    onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
+                }
             }
         }
     }
@@ -140,7 +143,7 @@ fun CategoryItem(subsCategories: SubsCategories, onSelectChanged: (SubsCategorie
 
 @Preview(showBackground = true)
 @Composable
-fun DoctorItem() {
+fun DoctorItem(onClick:() -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,7 +151,7 @@ fun DoctorItem() {
     ) {
         Row(
             verticalAlignment = CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center, modifier = Modifier.clickable { onClick() }
         ) {
             Image(
                 painter = painterResource(id = R.drawable.img),

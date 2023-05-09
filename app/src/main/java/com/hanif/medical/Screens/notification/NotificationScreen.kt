@@ -1,6 +1,7 @@
 package com.matrixhive.subsalert.component.notification
 
 import android.annotation.SuppressLint
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -35,7 +38,11 @@ import com.hanif.medical.utils.graphs.UIEvent
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun NotificationScreen(onNavigate: (UIEvent.Navigate) -> Unit, navController: NavController, modifier: Modifier = Modifier) {
+fun NotificationScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         /*topBar = {
             CommonAppBar(title = "Notifications",
@@ -50,41 +57,70 @@ fun NotificationScreen(onNavigate: (UIEvent.Navigate) -> Unit, navController: Na
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)
         ) {
+            Column() {
 
-            EmptyScreen()
 
-            /*LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(20) {
-                    NotificationItem(modifier)
+                Text(
+                    text = "All Notification's",
+                    fontWeight = FontWeight.Bold,
+                    modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Start
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                //EmptyScreen()
+
+                val list = listOf(
+                    notificationModel(
+                        R.drawable.baseline_message_24,
+                        "14 Messages",
+                        "Check your Schedule Today"
+                    ), notificationModel(
+                        R.drawable.pills,
+                        "Medicine",
+                        "Check your Schedule Today"
+                    )
+                )
+
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    items(list) { item ->
+                        NotificationItem(item.image, item.title, item.desc, modifier)
+                    }
                 }
-            }*/
+            }
         }
     }
 }
 
-
+data class notificationModel(
+    @DrawableRes val image: Int, val title: String,
+    val desc: String
+)
 
 @Composable
-fun NotificationItem(modifier: Modifier = Modifier) {
+fun NotificationItem(
+    @DrawableRes image: Int, title: String,
+    desc: String, modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20))
-          //  .background(Magnolia),
+        //  .background(Magnolia),
 
-        ) {
-       /* Image(
-            painter = painterResource(id = R.drawable.netflix),
+    ) {
+        Image(
+            painter = painterResource(id = image),
             modifier = modifier
                 .size(60.dp)
                 .padding(10.dp),
             contentDescription = "",
             contentScale = ContentScale.Crop
-        )*/
+        )
         Column(Modifier.padding(vertical = 10.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Netflix \u2022 ",
+                    text = "$title \u2022 ",
                     fontWeight = FontWeight(500),
                     fontSize = 14.sp, color = Color.Black
                 )
@@ -96,7 +132,7 @@ fun NotificationItem(modifier: Modifier = Modifier) {
                 )
             }
             Text(
-                text = "This is a reminder that your membership with Netflix expired on 12 Jun, 2023 and you are now within your membership grace period.",
+                text = desc,
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp,
                 color = Color.Blue
@@ -117,7 +153,7 @@ fun EmptyScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        //Image(painter = painterResource(id = R.drawable.empty_list), contentDescription = "")
+        Image(painter = painterResource(id = R.drawable.empty_list), contentDescription = "")
 
         Text(
             text = title,

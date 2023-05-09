@@ -28,13 +28,19 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.hanif.medical.R
 import com.hanif.medical.navigation.Screen
 import com.hanif.medical.utils.CustomSpacer
+import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.AuthViewModel
 
 @Composable
-fun ForgetPasswordScreen(navController: NavController) {
+fun ForgetPasswordScreen(onPopBackStack: () -> Unit,
+                         onNavigate: (UIEvent.Navigate) -> Unit,
+                         navController: NavController, viewModel: AuthViewModel = hiltViewModel()
+) {
     Column(modifier = Modifier.fillMaxSize()) {
 
         Image(
@@ -64,7 +70,7 @@ fun ForgetPasswordScreen(navController: NavController) {
         
         CommonButton("Send", modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = { navController.popBackStack()})
+            .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {  navController.popBackStack()})
 
     }
 }

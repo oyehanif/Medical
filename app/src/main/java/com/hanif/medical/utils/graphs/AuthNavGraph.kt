@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.hanif.medical.Screens.ForgetPasswordScreen
 import com.hanif.medical.Screens.LoginScreen
 import com.hanif.medical.Screens.RegisterScreen
 import com.hanif.medical.Screens.WelcomeScreen
@@ -28,6 +29,10 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController, prefKeys: Int
         composable(route = AuthScreen.SignUp.route) {
             RegisterScreen(onNavigate = {navController.navigate(it.route)},navController = navController, onPopBackStack = {navController.popBackStack()})
         }
+
+        composable(route = AuthScreen.ForgetPassword.route) {
+            ForgetPasswordScreen(onNavigate = {navController.navigate(it.route)},navController = navController, onPopBackStack = {navController.popBackStack()})
+        }
     }
 }
 
@@ -35,4 +40,5 @@ sealed class AuthScreen(val route: String) {
     object Login : AuthScreen(route = "LOGIN")
     object SignUp : AuthScreen(route = "SIGN_UP")
     object OnBoarding : AuthScreen(route = "ON_BOARDING")
+    object ForgetPassword : AuthScreen(route = "FORGET_PASSWORD")
 }

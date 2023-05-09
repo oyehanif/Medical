@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }*/
-                RootNavigationGraph(navController = rememberNavController(), 0)
+                RootNavigationGraph(navController = rememberNavController(), 0  )
             }
         }
     }

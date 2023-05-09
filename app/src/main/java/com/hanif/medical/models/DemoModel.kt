@@ -1,22 +1,24 @@
 package com.hanif.medical.models
 
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.mutableStateListOf
+import com.hanif.medical.R
 
 
 data class SubsCategories(
-    val categories: String,
+    val categories: String,@DrawableRes val image:Int,
     val isSelected: Boolean = false,
 )
 
 class ListOfCategories {
     val itemDataList = mutableStateListOf(
-        SubsCategories("All", true),
-        SubsCategories("Music"),
-        SubsCategories("Entertainment"),
-        SubsCategories("Education"),
-        SubsCategories("SIP"),
-        SubsCategories("Insurance"),
-        SubsCategories("Other"),
+        SubsCategories("all", R.drawable.cardiologist,true),
+        SubsCategories("Cardiologist", R.drawable.cardiologist),
+        SubsCategories("Dental", R.drawable.dental),
+        SubsCategories("physcologist", R.drawable.brain),
+        SubsCategories("Skin Specialist", R.drawable.cardiologist),
+        SubsCategories("eye's", R.drawable.eye),
+        SubsCategories("Other", R.drawable.cardiologist),
     )
 
     // were updating the entire list in a single pass using its iterator

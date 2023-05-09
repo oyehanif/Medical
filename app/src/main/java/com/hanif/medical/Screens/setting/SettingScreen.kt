@@ -113,13 +113,13 @@ fun SettingScreen(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column(Modifier.padding(vertical = 10.dp)) {
                         Text(
-                            text = "John Smith",
+                            text = "Hanif Shaikh",
                             fontWeight = FontWeight(500),
                             fontSize = 16.sp, //color = YankeesBlue1
                         )
 
                         Text(
-                            text = "johnsmith007@gmail.com",
+                            text = "HanifShaikh@gmail.com",
                            // fontFamily = DMSans,
                             fontWeight = FontWeight.Medium,
                             fontSize = 16.sp,
@@ -130,7 +130,7 @@ fun SettingScreen(
                 Spacer(modifier = Modifier.height(18.dp))
                 //Edit Profile
                 CommonCardViewForSettingScreen(
-                    text =" stringResource(id = R.string.edit_profile)",
+                    text ="Edit Profile",
                     lightIcon = R.drawable.setting_user_ligth,
                     darkIcon = R.drawable.setting_user_dark,
                     onClick = { onNavigate(UIEvent.Navigate(route = Routes.EDIT_PROFILE_SCREEN)) })
@@ -138,37 +138,37 @@ fun SettingScreen(
                 //Currency
                 CommonCardViewForSettingScreen(
                     lightIcon = R.drawable.setting_currency_ligth,
-                    text = "stringResource(R.string.currency)",
+                    text = "Currency",
                     darkIcon = R.drawable.setting_currency_dark, onClick = {})
 
                 //Notification
                 CommonCardViewForSettingScreen(
                     lightIcon = R.drawable.setting_notification_ligth,
-                    text = "stringResource(R.string.notification)",
+                    text = "sNotification",
                     darkIcon = R.drawable.setting_notification_dark, onClick = {})
 
                 //Theme
                 CommonCardViewForSettingScreen(
                     lightIcon = R.drawable.setting_theme_ligth,
-                    text = "stringResource(R.string.theme)",
+                    text = "Theme",
                     darkIcon = R.drawable.setting_theme_dark, onClick = {})
 
                 //Delete My Account
                 CommonCardViewForSettingScreen(
                     lightIcon = R.drawable.setting_delete_ligth,
-                    text = "stringResource(R.string.delete_my_account)",
+                    text = "Delete My Account",
                     darkIcon = R.drawable.setting_delete_dark, onClick = {})
 
                 //FAQ's
                 CommonCardViewForSettingScreen(
                     lightIcon = R.drawable.setting_faq_ligth,
-                    text = "stringResource(R.string.faq_s)",
+                    text = "FAQ's",
                     darkIcon = R.drawable.setting_faq_dark, onClick = {})
 
                 //Logout
                 CommonCardViewForSettingScreen(
                     lightIcon = R.drawable.setting_logout_ligth,
-                    text = "stringResource(R.string.logout)",
+                    text = "Logout",
                     darkIcon = R.drawable.setting_logout_dark, onClick = {})
 
             }
