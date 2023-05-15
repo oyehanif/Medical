@@ -5,18 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
+import com.hanif.medical.datastore.DataStore
 import com.hanif.medical.models.Resource
 import com.hanif.medical.repository.AuthRepository
 import com.hanif.medical.viewmodel.base.BaseViewModal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val authRepository: AuthRepository,) :
+class AuthViewModel @Inject constructor(private val authRepository: AuthRepository,private val dataStore: DataStore) :
     BaseViewModal() {
 
     private val _registerFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
@@ -49,14 +49,19 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
 
     fun login(
         email: String,
-        password: String
+        password: String,
+        isRemember: Boolean
     ) = viewModelScope.launch {
         if(email.isEmpty()){
             _loginFlow.value = Resource.Error("Email is Empty")
             return@launch
         }
         _loginFlow.value = Resource.Loading()
+
         val result = authRepository.login(email, password)
+        /*if (isRemember){
+            dataStore.
+        }*/
         _loginFlow.value = result
     }
 

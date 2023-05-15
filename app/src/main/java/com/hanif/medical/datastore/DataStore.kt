@@ -19,6 +19,7 @@ class DataStore(context: Context) {
 
     private object PreferencesKey {
         val onBoardingKey = booleanPreferencesKey(name = "on_boarding_completed")
+        val loginRememberKey = booleanPreferencesKey(name = "loginRememberKey")
     }
 
     private val dataStore = context.dataStore
@@ -28,6 +29,8 @@ class DataStore(context: Context) {
             preferences[PreferencesKey.onBoardingKey] = completed
         }
     }
+
+
 
     fun readOnBoardingState(): Flow<Boolean> {
         return dataStore.data

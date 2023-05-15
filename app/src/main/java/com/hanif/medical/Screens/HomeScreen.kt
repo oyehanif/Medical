@@ -1,5 +1,6 @@
 package com.hanif.medical.Screens
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,9 +26,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
@@ -37,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,11 +54,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.hanif.medical.R
 import com.hanif.medical.models.ListOfCategories
+import com.hanif.medical.models.Resource
 import com.hanif.medical.models.SubsCategories
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.ui.theme.SimplePurple
@@ -63,14 +70,25 @@ import com.hanif.medical.utils.Routes.ALL_DOCTOR_SCREEN
 import com.hanif.medical.utils.Routes.REPORT_SCREEN
 import com.hanif.medical.utils.Routes.SHOPPING_SCREEN
 import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController, modifier: Modifier = Modifier
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
+
+    //this composable function is called every single time our to-do list screen updates
+   // val todos = viewModel.fetchList.collectAsStateWithLifecycle()
+
+    val scaffoldState = rememberScaffoldState()
+
+//    val paddingValues = it
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = modifier
@@ -136,120 +154,124 @@ fun HomeScreen(
                     }
                 )
             }
+        }
+        /*//Search Filed
+        val (value, onValueChange) = remember { mutableStateOf("") }
 
-            /*//Search Filed
-            val (value, onValueChange) = remember { mutableStateOf("") }
-
-            Spacer(modifier = Modifier.height(10.dp))
-            TextField(
-                value = value,
-                onValueChange = onValueChange,
-                textStyle = TextStyle(fontSize = 17.sp),
-                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(SimplePurple)
-                    .clip(RoundedCornerShape(16.dp)),
-                placeholder = { Text(text = "") },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.DarkGray
-                )
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            textStyle = TextStyle(fontSize = 17.sp),
+            leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(SimplePurple)
+                .clip(RoundedCornerShape(16.dp)),
+            placeholder = { Text(text = "") },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = Color.DarkGray
             )
+        )
 */
-            //Specialist
-            Text(
-                text = "Specialist",
-                Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth(), textAlign = TextAlign.Start,
+        //Specialist
+        Text(
+            text = "Specialist",
+            Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(), textAlign = TextAlign.Start,
 
-                fontFamily = DMSans, fontWeight = FontWeight.Bold
-            )
+            fontFamily = DMSans, fontWeight = FontWeight.Bold
+        )
 
 
-            val itemList = remember {
-                ListOfCategories()
+        val itemList = remember {
+            ListOfCategories()
+        }
+
+        LazyRow() {
+            items(itemList.itemDataList, key = { it.categories }) {
+                CommonChip(it, itemList::onItemSelected)
             }
+        }
 
-            LazyRow() {
-                items(itemList.itemDataList, key = { it.categories }) {
-                    CommonChip(it, itemList::onItemSelected)
-                }
+        /*Services*/
+        Text(
+            text = "Our Services",
+            Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(), textAlign = TextAlign.Start,
+
+            fontFamily = DMSans, fontWeight = FontWeight.Bold
+        )
+        Row(
+            modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            BaseServiceComp(R.drawable.doctor) {
+                onNavigate(
+                    UIEvent.Navigate(
+                        ALL_DOCTOR_SCREEN
+                    )
+                )
             }
-
-            /*Services*/
-            Text(
-                text = "Our Services",
-                Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth(), textAlign = TextAlign.Start,
-
-                fontFamily = DMSans, fontWeight = FontWeight.Bold
-            )
-            Row(
-                modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                BaseServiceComp(R.drawable.doctor){
-                    onNavigate(
-                        UIEvent.Navigate(
-                            ALL_DOCTOR_SCREEN
-                        )
-                    )
-                }
-                BaseServiceComp(R.drawable.medicine, )
-                {
-                    onNavigate(
-                        UIEvent.Navigate(
-                            SHOPPING_SCREEN
-                        )
-                    )
-                }
-                BaseServiceComp(R.drawable.medical_report) {
-                    onNavigate(
-                        UIEvent.Navigate(
-                            REPORT_SCREEN
-                        )
-                    )
-                }
-                BaseServiceComp(R.drawable.baseline_shopping_cart_24){
-                    onNavigate(
-                        UIEvent.Navigate(
-                            SHOPPING_SCREEN
-                        )
-                    )
-                }
-            }
-
-            Spacer(modifier = modifier.height(10.dp))
-
-            /*Top Doctors*/
-            Text(
-                text = "Top Doctors",
-                Modifier
-                    .fillMaxWidth()
-                    .size(30.dp),
-                textAlign = TextAlign.Start,
-
-                fontFamily = DMSans, fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = modifier.height(10.dp))
-
-            LazyColumn()
+            BaseServiceComp(R.drawable.medicine)
             {
-                items(10) {
-                    DoctorItem {
-                        onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
-                    }
-                }
+                onNavigate(
+                    UIEvent.Navigate(
+                        SHOPPING_SCREEN
+                    )
+                )
             }
+            BaseServiceComp(R.drawable.medical_report) {
+                onNavigate(
+                    UIEvent.Navigate(
+                        REPORT_SCREEN
+                    )
+                )
+            }
+            BaseServiceComp(R.drawable.baseline_shopping_cart_24) {
+                onNavigate(
+                    UIEvent.Navigate(
+                        SHOPPING_SCREEN
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = modifier.height(10.dp))
+
+        /*Top Doctors*/
+        Text(
+            text = "Top Doctors",
+            Modifier
+                .fillMaxWidth()
+                .size(30.dp),
+            textAlign = TextAlign.Start,
+
+            fontFamily = DMSans, fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = modifier.height(10.dp))
+
+        LazyColumn()
+        {
+            /*items(10) {
+                DoctorItem {
+                    onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
+                }
+            }*/
+
+            /*items(todos.value!!) {
+                Log.e("TAG", "HomeScreen: $it")
+            }*/
         }
     }
 }
+
 
 @Composable
 fun DotsIndicator(

@@ -1,6 +1,5 @@
 package com.hanif.medical.Screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -40,7 +39,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.hanif.medical.models.Resource
-import com.hanif.medical.navigation.Screen
 import com.hanif.medical.utils.CustomSpacer
 import com.hanif.medical.utils.graphs.AuthScreen
 import com.hanif.medical.utils.graphs.Graph
@@ -110,7 +108,7 @@ fun LoginScreen(
         CommonButton("Login", modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
-            viewModel.login(email, password)
+            viewModel.login(email, password, isRemeber)
         })
 
         Text(text = "Forgot the password ?",

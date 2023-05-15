@@ -15,6 +15,21 @@ class AuthRepository(
     private val firebaseDatabase: FirebaseDatabase
 ) {
 
+    suspend fun login(email: String,password: String): Resource<FirebaseUser> {
+        return try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email,password).await()
+            Resource.Success(result.user!!)
+        } catch (e: FirebaseAuthException) {
+            Resource.Error(e.message.toString())
+        } catch (e: FirebaseException) {
+            Resource.Error(e.message.toString())
+        } catch (e: Exception) {
+            Resource.Error(e.message.toString())
+        }
+    }
+
+    fun currentUser(): FirebaseUser? = firebaseAuth.currentUser
+
     suspend fun register(
         name: String,
         email: String,
@@ -34,21 +49,6 @@ class AuthRepository(
             Resource.Error(e.message.toString())
         }
     }
-
-    suspend fun login(email: String,password: String): Resource<FirebaseUser> {
-        return try {
-            val result = firebaseAuth.signInWithEmailAndPassword(email,password).await()
-            Resource.Success(result.user!!)
-        } catch (e: FirebaseAuthException) {
-            Resource.Error(e.message.toString())
-        } catch (e: FirebaseException) {
-            Resource.Error(e.message.toString())
-        } catch (e: Exception) {
-            Resource.Error(e.message.toString())
-        }
-    }
-
-    fun currentUser(): FirebaseUser? = firebaseAuth.currentUser
 
     fun logout() = firebaseAuth.signOut()
 }
