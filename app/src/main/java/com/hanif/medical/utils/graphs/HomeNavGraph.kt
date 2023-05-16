@@ -8,6 +8,7 @@ import com.hanif.medical.Screens.AppointmentScheduleScreen
 import com.hanif.medical.Screens.DetailDoctorScreen
 import com.hanif.medical.Screens.HomeScreen
 import com.hanif.medical.Screens.ReportScreen
+import com.hanif.medical.Screens.ShoppingAddressScreen
 import com.hanif.medical.Screens.ShoppingScreen
 import com.hanif.medical.utils.Routes
 import com.matrixhive.subsalert.component.notification.NotificationScreen
@@ -48,7 +49,15 @@ fun HomeNavGraph(navController: NavHostController) {
         composable(
             route = Routes.SHOPPING_SCREEN,
         ) {
-            ShoppingScreen()
+            ShoppingScreen(   onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Routes.SHOPPING_ADDRESS_SCREEN,
+        ) {
+            ShoppingAddressScreen()
         }
 
         composable(

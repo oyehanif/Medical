@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-data class DoctorModel(val image: String, val name: String, val specialize: String)
+data class DoctorModel(val image: String="", val name: String="", val specialize: String="")
 
 class HomeRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
@@ -42,13 +42,12 @@ class HomeRepository @Inject constructor(
     }*/
 
 
-    fun fetchData(): Flow<List<DoctorModel>> {
-        /*val fetchDataFromFirebase =
+    fun fetchData(): MutableStateFlow<Resource<List<DoctorModel>>> {
+        val fetchDataFromFirebase =
             MutableStateFlow<Resource<List<DoctorModel>>>(Resource.Loading())
         try {
 
             firebaseDatabase.getReference("Doctors")
-                .child(firebaseAuth.currentUser!!.uid)
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         packagesList.clear()
@@ -70,9 +69,9 @@ class HomeRepository @Inject constructor(
         } catch (e: Exception) {
             fetchDataFromFirebase.value = Resource.Error(e.message.toString())
         }
-        return fetchDataFromFirebase*/
+        return fetchDataFromFirebase
 
-        return flow {
+        /*return flow {
             firebaseDatabase.getReference("Doctors")
                 .child(firebaseAuth.currentUser!!.uid)
                 .addValueEventListener(object : ValueEventListener {
@@ -96,7 +95,7 @@ class HomeRepository @Inject constructor(
                     }
                 })
             emit(packagesList)
-        }
+        }*/
     }
 
 }

@@ -1,6 +1,5 @@
 package com.hanif.medical.Screens
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,7 +25,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -40,7 +38,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,13 +52,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.hanif.medical.R
 import com.hanif.medical.models.ListOfCategories
-import com.hanif.medical.models.Resource
 import com.hanif.medical.models.SubsCategories
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.ui.theme.SimplePurple
@@ -72,7 +67,6 @@ import com.hanif.medical.utils.Routes.SHOPPING_SCREEN
 import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,16 +77,18 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
+
     //this composable function is called every single time our to-do list screen updates
    // val todos = viewModel.fetchList.collectAsStateWithLifecycle()
 
     val scaffoldState = rememberScaffoldState()
+    val state = viewModel.state
 
 //    val paddingValues = it
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(horizontal = 20.dp, vertical = 10.dp),
             Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -259,15 +255,12 @@ fun HomeScreen(
 
         LazyColumn()
         {
-            /*items(10) {
-                DoctorItem {
+            items(state.companies.size) {i ->
+                val company = state.companies[i]
+                DoctorItem(company) {
                     onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
                 }
-            }*/
-
-            /*items(todos.value!!) {
-                Log.e("TAG", "HomeScreen: $it")
-            }*/
+            }
         }
     }
 }

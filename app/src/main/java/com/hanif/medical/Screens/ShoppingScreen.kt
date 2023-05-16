@@ -1,6 +1,7 @@
 package com.hanif.medical.Screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,16 +20,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.hanif.medical.R
+import com.hanif.medical.utils.Routes
+import com.hanif.medical.utils.graphs.UIEvent
 import com.matrixhive.subsalert.component.notification.EmptyScreen
 
 @Composable
-fun ShoppingScreen() {
+fun ShoppingScreen(onNavigate: (UIEvent.Navigate) -> Unit,
+                   navController: NavController,) {
     // EmptyScreen("Working Process", "Sorry But this service is not available Currently")
 
     LazyVerticalGrid(columns = GridCells.Fixed(2)) {
         items(10) {
-            ItemLayout()
+            ItemLayout{
+                onNavigate(UIEvent.Navigate(route = Routes.SHOPPING_ADDRESS_SCREEN))
+            }
         }
     }
 }
@@ -36,11 +43,11 @@ fun ShoppingScreen() {
 
 @Preview
 @Composable
-fun ItemLayout() {
+fun ItemLayout(onClick : () -> Unit = {}) {
     Card(
-        Modifier.padding(5.dp),
+        Modifier.padding(5.dp).clickable { onClick },
         shape = RoundedCornerShape(8),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
     ) {
         Column() {
             Image(
