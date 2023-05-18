@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
+import androidx.compose.material.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,141 +23,282 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.hanif.medical.Screens.commo.CommonAppBar
 import com.hanif.medical.ui.theme.DMSans
 
-@Preview(showBackground = true)
+import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.*
+import com.hanif.medical.R
+import com.hanif.medical.utils.Routes
+
+import com.hanif.medical.utils.graphs.UIEvent
+
+
 @Composable
-fun ShoppingAddressScreen() {
+fun ShoppingAddressScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController, modifier: Modifier = Modifier
+) {
     var isRemeber by rememberSaveable {
         mutableStateOf(false)
     }
-    Column(Modifier.fillMaxSize()) {
-        Text(
-            text = "Full Name",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
+    Scaffold(topBar = {
+        CommonAppBar(
+            navigationIconAction = {},
+            title = "Shopping Address"
         )
+    }) { paddingValues ->
 
-        commonTextFiled(hint = "Hanif")
-
-        Text(
-            text = "Mobile Number",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = "90xxxxxxxxxx")
-
-        Text(
-            text = "Flat, House No., Building",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = " Xyz xxxxxxxxxx")
-
-        Text(
-            text = "Area, Street",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = " Xyz xxxxxxxxxx")
-
-        Text(
-            text = "Landmark",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = " Xyz")
-
-        Text(
-            text = "Pincode",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = "123456")
-
-        Text(
-            text = "Town/City",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = "abcd")
-
-        Text(
-            text = "State",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = "abcd")
-
-        Text(
-            text = "Country",
-            Modifier.padding(10.dp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Normal,
-            maxLines = 3,
-            fontSize = 16.sp
-        )
-
-        commonTextFiled(hint = "abcd")
-
-        Row(
+        val innerPaddings = paddingValues
+        Column(
             Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 10.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Checkbox(checked = isRemeber, onCheckedChange = { isRemeber = !isRemeber })
-
             Text(
-                text = "Make This my Defult Address!",
-                Modifier.align(Alignment.CenterVertically),
+                text = "Full Name",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
                 fontSize = 16.sp
             )
-        }
 
-        CommonButton("Save", modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
-            //viewModel.login(email, password, isRemeber)
-        })
+            CommonTextFiled(hint = "Hanif")
+
+            Text(
+                text = "Mobile Number",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = "90xxxxxxxxxx")
+
+            Text(
+                text = "Flat, House No., Building",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = " Xyz xxxxxxxxxx")
+
+            Text(
+                text = "Area, Street",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = " Xyz xxxxxxxxxx")
+
+            Text(
+                text = "Landmark",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = " Xyz")
+
+            Text(
+                text = "Pincode",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = "123456")
+
+            Text(
+                text = "Town/City",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = "abcd")
+
+            Text(
+                text = "State",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = "abcd")
+
+            Text(
+                text = "Country",
+                Modifier.padding(10.dp),
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Normal,
+                maxLines = 3,
+                fontSize = 16.sp
+            )
+
+            CommonTextFiled(hint = "abcd")
+
+            Row(
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 10.dp)
+            ) {
+                Checkbox(checked = isRemeber, onCheckedChange = { isRemeber = !isRemeber })
+
+                Text(
+                    text = "Make This my Defult Address!",
+                    Modifier.align(Alignment.CenterVertically),
+                    fontSize = 16.sp
+                )
+            }
+
+            CommonButton("Save", modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
+              onNavigate(UIEvent.Navigate(Routes.SHOPPING_PRE_PAYMENT_SCREEN))
+            })
+        }
+    }
+}
+
+
+//common field views
+@Preview(showBackground = true)
+@Composable
+fun CommonTextFiled(
+    modifier: Modifier = Modifier,
+    hint: String? = null,
+    text: String = "",
+    onValueChange: (String) -> Unit = {},
+    icon: ImageVector? = null,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    imeAction: ImeAction = ImeAction.Done,
+    trailingIcon: Boolean = false,
+    @DrawableRes TrailingIconImg: Int? = null,
+    isTrailingIconClickable: Boolean = false,
+    singleLine: Boolean = true,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
+    minLines: Int = 1,
+    isError: Boolean = false,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+    isTrailingNotDefault: Boolean = false,
+    onclick: () -> Unit = {},
+    shape: Shape = RoundedCornerShape(40),
+    errorMes: String = "",
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+
+    ) {
+    var toggleClick by rememberSaveable { mutableStateOf(false) }
+    Column() {
+        OutlinedTextField(
+            value = text,
+            onValueChange = onValueChange,
+            modifier = modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .clip(RoundedCornerShape(40)),
+            keyboardOptions = KeyboardOptions(
+                KeyboardCapitalization.Characters,
+                autoCorrect = false,
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            placeholder = {
+                if (hint != null) {
+                    Text(
+                        text = hint,
+                        color = Color.Gray,
+                        fontWeight = FontWeight(400),
+                        fontSize = 14.sp
+                    )
+                }
+            },
+            visualTransformation =
+            if (!toggleClick) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                if (trailingIcon) {
+                    val image: Int = TrailingIconImg
+                        ?: if (toggleClick) {
+                            R.drawable.visibility_on
+                        } else {
+                            R.drawable.visibility_off
+                        }
+                    IconButton(
+                        onClick = {
+                            if (isTrailingIconClickable) {
+                                if (isTrailingNotDefault) {
+                                    onclick()
+                                } else {
+                                    run { toggleClick = !toggleClick }
+                                }
+                            }
+                        }
+                    ) {
+                        Icon(painter = painterResource(id = image), contentDescription = null)
+                    }
+                }
+            },
+            singleLine = singleLine,
+            maxLines = maxLines,
+            minLines = minLines,
+            colors = TextFieldDefaults.textFieldColors(
+                /* backgroundColor = LocalCustomColorsPalette.current.searchBackGroundColor,
+                 cursorColor = LocalCustomColorsPalette.current.textColor,
+                 disabledLabelColor = RomanSilver,
+                 focusedIndicatorColor = Color.Transparent,
+                 unfocusedIndicatorColor = Color.Transparent,
+                 textColor = LocalCustomColorsPalette.current.textColor,*/
+            ),
+            shape = shape,
+            isError = isError,
+            textStyle = TextStyle()
+        )
+        AnimatedVisibility(visible = isError && errorMes != "") {
+            Text(
+                modifier = Modifier.padding(start = 8.dp),
+                text = errorMes,
+                fontSize = 14.sp,
+                color = Color.Red
+            )
+        }
     }
 }

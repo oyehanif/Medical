@@ -5,10 +5,13 @@ import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.hanif.medical.Screens.AllDoctorScreen
 import com.hanif.medical.Screens.AppointmentScheduleScreen
+import com.hanif.medical.Screens.CardPaymentScreen
 import com.hanif.medical.Screens.DetailDoctorScreen
 import com.hanif.medical.Screens.HomeScreen
+import com.hanif.medical.Screens.OrderSuccessfulScreen
 import com.hanif.medical.Screens.ReportScreen
 import com.hanif.medical.Screens.ShoppingAddressScreen
+import com.hanif.medical.Screens.ShoppingPrePaymentScreen
 import com.hanif.medical.Screens.ShoppingScreen
 import com.hanif.medical.utils.Routes
 import com.matrixhive.subsalert.component.notification.NotificationScreen
@@ -49,7 +52,24 @@ fun HomeNavGraph(navController: NavHostController) {
         composable(
             route = Routes.SHOPPING_SCREEN,
         ) {
-            ShoppingScreen(   onNavigate = { event -> navController.navigate(event.route) },
+            ShoppingScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
+        composable(
+            route = Routes.SHOPPING_SUCCESSFUL_SCREEN,
+        ) {
+            OrderSuccessfulScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
+        composable(
+            route = Routes.SHOPPING_CARD_PAYMENT_SCREEN,
+        ) {
+            CardPaymentScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
                 navController = navController
             )
         }
@@ -57,7 +77,18 @@ fun HomeNavGraph(navController: NavHostController) {
         composable(
             route = Routes.SHOPPING_ADDRESS_SCREEN,
         ) {
-            ShoppingAddressScreen()
+            ShoppingAddressScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
+        composable(
+            route = Routes.SHOPPING_PRE_PAYMENT_SCREEN,
+        ) {
+            ShoppingPrePaymentScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
         }
 
         composable(

@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            MedicalTheme {
+            MedicalTheme(false) {
                 val startDestination by splashViewModel.startDestination
                 /*Surface(
                     modifier = Modifier.fillMaxSize(),
