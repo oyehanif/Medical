@@ -40,7 +40,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hanif.medical.R
+import com.hanif.medical.Screens.shopping.shppingaddress.ShoppingAddressViewModel
 import com.hanif.medical.utils.Routes
 
 import com.hanif.medical.utils.graphs.UIEvent
@@ -49,7 +51,9 @@ import com.hanif.medical.utils.graphs.UIEvent
 @Composable
 fun ShoppingAddressScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController, modifier: Modifier = Modifier
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: ShoppingAddressViewModel = hiltViewModel()
 ) {
     var isRemeber by rememberSaveable {
         mutableStateOf(false)
@@ -65,6 +69,8 @@ fun ShoppingAddressScreen(
         Column(
             Modifier
                 .fillMaxSize()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 10.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
@@ -77,7 +83,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "Hanif")
+            CommonTextFiled(hint = "Hanif",
+                text = viewModel.name,
+                onValueChange = { string ->
+                  //  viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.nameErrMsg,
+                isError = viewModel.nameValid,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "Mobile Number",
@@ -89,7 +102,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "90xxxxxxxxxx")
+            CommonTextFiled(hint = "90xxxxxxxxxx",
+                text = viewModel.phone,
+                onValueChange = { string ->
+                    //viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.phoneErrMsg,
+                isError = viewModel.phoneNameValid,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "Flat, House No., Building",
@@ -101,7 +121,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = " Xyz xxxxxxxxxx")
+            CommonTextFiled(hint = " Xyz xxxxxxxxxx",
+                text = viewModel.address,
+                onValueChange = { string ->
+                   // viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.addressMsg,
+                isError = viewModel.addressValid,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "Area, Street",
@@ -113,7 +140,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = " Xyz xxxxxxxxxx")
+            CommonTextFiled(hint = " Xyz xxxxxxxxxx",
+                text = viewModel.address1,
+                onValueChange = { string ->
+                    // viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.addressMsg1,
+                isError = viewModel.addressValid1,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "Landmark",
@@ -125,7 +159,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = " Xyz")
+            CommonTextFiled(hint = " Xyz",
+                text = viewModel.landMark,
+                onValueChange = { string ->
+                    // viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.landMarkMsg,
+                isError = viewModel.landMarkValid,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "Pincode",
@@ -137,7 +178,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "123456")
+            CommonTextFiled(hint = "123456",
+                text = viewModel.pinCode,
+                onValueChange = { string ->
+                    // viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.pinCodeMsg,
+                isError = viewModel.pinCodeValid,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "Town/City",
@@ -149,7 +197,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "abcd")
+            CommonTextFiled(hint = "abcd",
+                text = viewModel.city,
+                onValueChange = { string ->
+                    // viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.cityMsg,
+                isError = viewModel.cityValid,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "State",
@@ -161,7 +216,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "abcd")
+            CommonTextFiled(hint = "abcd",
+                text = viewModel.state,
+                onValueChange = { string ->
+                    // viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.stateMsg,
+                isError = viewModel.stateValid,
+                imeAction = ImeAction.Next)
 
             Text(
                 text = "Country",
@@ -173,7 +235,14 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "abcd")
+            CommonTextFiled(hint = "abcd",
+                text = viewModel.country,
+                onValueChange = { string ->
+                    // viewModel.onEvent(AuthEvent.OnNameChange(string))
+                },
+                errorMes = viewModel.countryMsg,
+                isError = viewModel.countryValid,
+                imeAction = ImeAction.Next)
 
             Row(
                 Modifier
@@ -192,7 +261,7 @@ fun ShoppingAddressScreen(
             CommonButton("Save", modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
-              onNavigate(UIEvent.Navigate(Routes.SHOPPING_PRE_PAYMENT_SCREEN))
+                onNavigate(UIEvent.Navigate(Routes.SHOPPING_PRE_PAYMENT_SCREEN))
             })
         }
     }
@@ -280,14 +349,14 @@ fun CommonTextFiled(
             singleLine = singleLine,
             maxLines = maxLines,
             minLines = minLines,
-            colors = TextFieldDefaults.textFieldColors(
-                /* backgroundColor = LocalCustomColorsPalette.current.searchBackGroundColor,
+            /*colors = TextFieldDefaults.textFieldColors(
+                *//* backgroundColor = LocalCustomColorsPalette.current.searchBackGroundColor,
                  cursorColor = LocalCustomColorsPalette.current.textColor,
                  disabledLabelColor = RomanSilver,
                  focusedIndicatorColor = Color.Transparent,
                  unfocusedIndicatorColor = Color.Transparent,
-                 textColor = LocalCustomColorsPalette.current.textColor,*/
-            ),
+                 textColor = LocalCustomColorsPalette.current.textColor,*//*
+            )*/
             shape = shape,
             isError = isError,
             textStyle = TextStyle()

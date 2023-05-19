@@ -29,13 +29,23 @@ import com.hanif.medical.utils.graphs.UIEvent
 import com.matrixhive.subsalert.component.notification.EmptyScreen
 
 @Composable
-    fun ShoppingScreen(onNavigate: (UIEvent.Navigate) -> Unit,
-                       navController: NavController,) {
+fun ShoppingScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController,
+) {
     // EmptyScreen("Working Process", "Sorry But this service is not available Currently")
-    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-        items(10) {
-            ItemLayout{
-                onNavigate(UIEvent.Navigate(route = Routes.SHOPPING_ADDRESS_SCREEN))
+    androidx.compose.material.Scaffold(topBar = {
+        CommonAppBar(
+            navigationIconAction = { /*TODO*/ },
+            title = "Shopping Item's"
+        )
+    }) {
+        val innerPAdding = it
+        LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+            items(10) {
+                ItemLayout {
+                    onNavigate(UIEvent.Navigate(route = Routes.SHOPPING_ADDRESS_SCREEN))
+                }
             }
         }
     }
@@ -44,13 +54,14 @@ import com.matrixhive.subsalert.component.notification.EmptyScreen
 
 @Preview
 @Composable
-fun ItemLayout(onClick : () -> Unit = {}) {
+fun ItemLayout(onClick: () -> Unit = {}) {
     Card(
         Modifier
             .padding(5.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(8),
         colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
         Column() {
             Image(
@@ -61,9 +72,18 @@ fun ItemLayout(onClick : () -> Unit = {}) {
                     .height(200.dp)
             )
 
-            Text(text = "Benylin Dry and Ticky cough syrup 100 ML")
+            Text(
+                text = "Benylin Dry and Ticky cough syrup 100 ML", Modifier.padding(
+                    10.dp
+                )
+            )
 
-            Text(text = "Rs. 1000")
+            Text(
+                text = "Rs. 1000",
+                Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp)
+            )
         }
     }
 }
