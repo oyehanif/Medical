@@ -139,7 +139,7 @@ fun DoctorItem(itemModel: DoctorModel, onClick: () -> Unit = {}) {
             horizontalArrangement = Arrangement.Center, modifier = Modifier.clickable { onClick() }
         ) {
             Image(
-                painter = rememberAsyncImagePainter(itemModel.image) ,//painterResource(id = R.drawable.img),
+                    painter = rememberAsyncImagePainter(itemModel.image) ,//painterResource(id = R.drawable.img),
                 contentDescription = "",
                 modifier = Modifier
                     .padding(10.dp)

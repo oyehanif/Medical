@@ -19,21 +19,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
 import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.repository.MedicineModel
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.HomeViewModel
+import com.hanif.medical.viewmodel.WelcomeViewModel
 import com.matrixhive.subsalert.component.notification.EmptyScreen
 
 @Composable
 fun ShoppingScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     // EmptyScreen("Working Process", "Sorry But this service is not available Currently")
+    val state = viewModel.medicineState
     androidx.compose.material.Scaffold(topBar = {
         CommonAppBar(
             navigationIconAction = { /*TODO*/ },
@@ -42,8 +50,9 @@ fun ShoppingScreen(
     }) {
         val innerPAdding = it
         LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-            items(10) {
-                ItemLayout {
+            items(state.companies.size) { i->
+                val medicine = state.companies[i]
+                ItemLayout(medicine) {
                     onNavigate(UIEvent.Navigate(route = Routes.SHOPPING_ADDRESS_SCREEN))
                 }
             }
@@ -52,9 +61,8 @@ fun ShoppingScreen(
 }
 
 
-@Preview
 @Composable
-fun ItemLayout(onClick: () -> Unit = {}) {
+fun ItemLayout(item : MedicineModel, onClick: () -> Unit = {}) {
     Card(
         Modifier
             .padding(5.dp)
@@ -65,21 +73,22 @@ fun ItemLayout(onClick: () -> Unit = {}) {
     ) {
         Column() {
             Image(
-                painter = painterResource(id = R.drawable.img_6),
+                painter = rememberAsyncImagePainter(item.image),
                 contentDescription = "",
                 Modifier
                     .fillMaxWidth()
                     .height(200.dp)
             )
 
-            Text(
-                text = "Benylin Dry and Ticky cough syrup 100 ML", Modifier.padding(
+
+            androidx.compose.material.Text(
+                text = item.name, Modifier.padding(
                     10.dp
-                )
+                ), maxLines = 4, overflow = TextOverflow.Ellipsis, minLines = 4
             )
 
             Text(
-                text = "Rs. 1000",
+                text = "Price :- " + item.price.toString(),
                 Modifier
                     .padding(horizontal = 10.dp)
                     .padding(bottom = 10.dp)
