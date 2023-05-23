@@ -15,6 +15,7 @@ import com.hanif.medical.Screens.ReportScreen
 import com.hanif.medical.Screens.ShoppingAddressScreen
 import com.hanif.medical.Screens.ShoppingPrePaymentScreen
 import com.hanif.medical.Screens.ShoppingScreen
+import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.utils.Routes
 import com.matrixhive.subsalert.component.notification.NotificationScreen
@@ -23,7 +24,8 @@ import com.matrixhive.subsalert.component.setting.SettingScreen
 @Composable
 fun HomeNavGraph(navController: NavHostController) {
 
-    val sharedViewModel :ShoppingSharedViewModel = hiltViewModel()
+    val shoppingSharedViewModel: ShoppingSharedViewModel = hiltViewModel()
+    val doctorSharedViewModel: DoctorSharedViewModel = hiltViewModel()
     NavHost(
         navController = navController,
         route = Graph.HOME,
@@ -32,7 +34,7 @@ fun HomeNavGraph(navController: NavHostController) {
         composable(route = BottomBarScreen.Home.route) {
             HomeScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController
+                navController = navController, sharedViewModel = doctorSharedViewModel
             )
         }
 
@@ -51,7 +53,9 @@ fun HomeNavGraph(navController: NavHostController) {
         composable(
             route = Routes.DETAIL_DOCTOR_SCREEN,
         ) {
-            DetailDoctorScreen()
+            DetailDoctorScreen(
+                sharedViewModel = doctorSharedViewModel
+            )
         }
 
         composable(
@@ -60,7 +64,7 @@ fun HomeNavGraph(navController: NavHostController) {
             ShoppingScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
                 navController = navController,
-                sharedViewModel=sharedViewModel
+                sharedViewModel = shoppingSharedViewModel
             )
         }
         composable(
@@ -102,7 +106,7 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             DetailShoppingScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController,sharedViewModel=sharedViewModel
+                navController = navController, sharedViewModel = shoppingSharedViewModel
             )
         }
 

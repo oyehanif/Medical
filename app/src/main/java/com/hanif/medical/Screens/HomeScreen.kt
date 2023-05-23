@@ -22,10 +22,8 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -58,6 +56,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.hanif.medical.R
+import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.models.ListOfCategories
 import com.hanif.medical.models.SubsCategories
 import com.hanif.medical.ui.theme.DMSans
@@ -76,6 +75,7 @@ fun HomeScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier,
+    sharedViewModel: DoctorSharedViewModel,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
 
@@ -260,6 +260,7 @@ fun HomeScreen(
                 items(state.companies.size) { i ->
                     val company = state.companies[i]
                     DoctorItem(company) {
+                        sharedViewModel.addDoctorModel(company)
                         onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
                     }
                 }

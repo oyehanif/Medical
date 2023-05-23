@@ -54,10 +54,11 @@ fun DetailShoppingScreen(
                 Image(
                     painter = rememberAsyncImagePainter(it.image),
                     contentDescription = "",
-                    contentScale = ContentScale.Crop, modifier =
+                    contentScale = ContentScale.Inside, modifier =
                     Modifier
                         .fillMaxWidth()
                         .height(300.dp)
+                        .padding(vertical = 10.dp)
                 )
 
 

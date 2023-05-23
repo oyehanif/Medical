@@ -33,62 +33,70 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
+import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
+import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 
-@Preview(showBackground = true)
+
 @Composable
-fun DetailDoctorScreen(modifier: Modifier = Modifier) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()
-    ) {
+fun DetailDoctorScreen(
+    sharedViewModel: DoctorSharedViewModel, modifier: Modifier = Modifier
+) {
 
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(20.dp), shape = RoundedCornerShape(30.dp)
+    val doctorModel = sharedViewModel.doctorModel
+    doctorModel?.let {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.fillMaxSize()
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+
+            Card(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(20.dp), shape = RoundedCornerShape(30.dp)
             ) {
-
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Top,
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(
-                        Icons.Default.ArrowBack,
-                        contentDescription = "",
-                        modifier.padding(start = 10.dp, top = 10.dp)
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top,
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
+
+                    ) {
+                        Image(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "",
+                            modifier.padding(start = 10.dp, top = 10.dp)
+                        )
+                        Image(
+                            rememberAsyncImagePainter(it.image),
+                            contentDescription = "", contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(RoundedCornerShape(30))
+                        )
+                        Image(
+                            Icons.Default.Settings,
+                            contentDescription = "",
+                            modifier.padding(start = 10.dp, top = 10.dp)
+                        )
+                    }
+                    Text(
+                        text = it.name,
+                        fontSize = 20.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.Bold
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.img),
-                        contentDescription = "", contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(100.dp)
-                            .clip(RoundedCornerShape(30))
-                    )
-                    Image(
-                        Icons.Default.Settings,
-                        contentDescription = "",
-                        modifier.padding(start = 10.dp, top = 10.dp)
-                    )
-                }
-                Text(
-                    text = "Dr. Hanif Shaikh",
-                    fontSize = 20.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.Bold
-                )
 
                 Text(
-                    text = "Dentist",
+                    text = it.specialize,
                     fontSize = 16.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -96,89 +104,89 @@ fun DetailDoctorScreen(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)
 
-                ) {
+                    ) {
 
-                    //Patients
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Patients", fontSize = 16.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.Light
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "345",
-                            fontSize = 18.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.Bold
-                        )
+                        //Patients
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "Patients", fontSize = 16.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Light
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "345",
+                                fontSize = 18.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        //Rating
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "Rating", fontSize = 16.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Light
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "4.9",
+                                fontSize = 18.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        //Experience
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "About", fontSize = 16.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Light
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "6 Years",
+                                fontSize = 18.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
                     }
-
-                    //Rating
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "Rating", fontSize = 16.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.Light
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "4.9",
-                            fontSize = 18.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    //Experience
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "About", fontSize = 16.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.Light
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "6 Years",
-                            fontSize = 18.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
                 }
             }
-        }
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(20.dp), shape = RoundedCornerShape(30.dp)
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start, modifier = modifier.padding(20.dp)
+            Card(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(20.dp), shape = RoundedCornerShape(30.dp)
             ) {
-                Text(
-                    text = "About",
-                    fontSize = 20.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    fontWeight = FontWeight.Bold
-                )
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start, modifier = modifier.padding(20.dp)
+                ) {
+                    Text(
+                        text = "About",
+                        fontSize = 20.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.Bold
+                    )
 
                 Text(
                     text = "dr.liya Davis is a board certified detntist specializing in intervertional Dentist , dr.liya Davis is a board certified detntist specializing in intervertional Dentist , dr.liya Davis is a board certified detntist specializing in intervertional Dentist , ",
@@ -190,19 +198,20 @@ fun DetailDoctorScreen(modifier: Modifier = Modifier) {
         }
 
 
-        Button(
-            onClick = { /*TODO*/ },
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            Text(
-                text = "Book Appointment",
-                fontSize = 20.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold,
-            )
+            Button(
+                onClick = { /*TODO*/ },
+                modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            ) {
+                Text(
+                    text = "Book Appointment",
+                    fontSize = 20.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
     }
 }
