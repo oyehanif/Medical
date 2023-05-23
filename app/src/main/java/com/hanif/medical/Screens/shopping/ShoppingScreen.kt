@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.google.gson.Gson
 import com.hanif.medical.R
 import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.repository.MedicineModel
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
@@ -38,6 +40,7 @@ import com.matrixhive.subsalert.component.notification.EmptyScreen
 fun ShoppingScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
+    sharedViewModel: ShoppingSharedViewModel,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     // EmptyScreen("Working Process", "Sorry But this service is not available Currently")
@@ -50,10 +53,11 @@ fun ShoppingScreen(
     }) {
         val innerPAdding = it
         LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-            items(state.companies.size) { i->
+            items(state.companies.size) { i ->
                 val medicine = state.companies[i]
                 ItemLayout(medicine) {
-                    onNavigate(UIEvent.Navigate(route = Routes.SHOPPING_ADDRESS_SCREEN))
+                    sharedViewModel.addMedicalValue(medicine)
+                    onNavigate(UIEvent.Navigate(route = Routes.SHOPPING_DETAIL_SCREEN))
                 }
             }
         }
@@ -62,7 +66,7 @@ fun ShoppingScreen(
 
 
 @Composable
-fun ItemLayout(item : MedicineModel, onClick: () -> Unit = {}) {
+fun ItemLayout(item: MedicineModel, onClick: () -> Unit = {}) {
     Card(
         Modifier
             .padding(5.dp)

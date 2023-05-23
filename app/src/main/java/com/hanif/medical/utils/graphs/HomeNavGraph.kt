@@ -1,24 +1,29 @@
 package com.hanif.medical.utils.graphs
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.hanif.medical.Screens.AllDoctorScreen
 import com.hanif.medical.Screens.AppointmentScheduleScreen
 import com.hanif.medical.Screens.CardPaymentScreen
 import com.hanif.medical.Screens.DetailDoctorScreen
+import com.hanif.medical.Screens.DetailShoppingScreen
 import com.hanif.medical.Screens.HomeScreen
 import com.hanif.medical.Screens.OrderSuccessfulScreen
 import com.hanif.medical.Screens.ReportScreen
 import com.hanif.medical.Screens.ShoppingAddressScreen
 import com.hanif.medical.Screens.ShoppingPrePaymentScreen
 import com.hanif.medical.Screens.ShoppingScreen
+import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.utils.Routes
 import com.matrixhive.subsalert.component.notification.NotificationScreen
 import com.matrixhive.subsalert.component.setting.SettingScreen
 
 @Composable
 fun HomeNavGraph(navController: NavHostController) {
+
+    val sharedViewModel :ShoppingSharedViewModel = hiltViewModel()
     NavHost(
         navController = navController,
         route = Graph.HOME,
@@ -54,7 +59,8 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             ShoppingScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController
+                navController = navController,
+                sharedViewModel=sharedViewModel
             )
         }
         composable(
@@ -88,6 +94,15 @@ fun HomeNavGraph(navController: NavHostController) {
             ShoppingPrePaymentScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
                 navController = navController
+            )
+        }
+
+        composable(
+            route = Routes.SHOPPING_DETAIL_SCREEN,
+        ) {
+            DetailShoppingScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController,sharedViewModel=sharedViewModel
             )
         }
 
