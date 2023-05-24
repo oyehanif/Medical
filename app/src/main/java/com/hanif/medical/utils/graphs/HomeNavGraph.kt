@@ -15,6 +15,7 @@ import com.hanif.medical.Screens.ReportScreen
 import com.hanif.medical.Screens.ShoppingAddressScreen
 import com.hanif.medical.Screens.ShoppingPrePaymentScreen
 import com.hanif.medical.Screens.ShoppingScreen
+import com.hanif.medical.Screens.doctor.DoctorBookingProcessFirstScreens
 import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.utils.Routes
@@ -54,6 +55,8 @@ fun HomeNavGraph(navController: NavHostController) {
             route = Routes.DETAIL_DOCTOR_SCREEN,
         ) {
             DetailDoctorScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController,
                 sharedViewModel = doctorSharedViewModel
             )
         }
@@ -116,6 +119,14 @@ fun HomeNavGraph(navController: NavHostController) {
             AllDoctorScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
                 navController = navController
+            )
+        }
+        composable(
+            route = Routes.DOCTOR_BOOKING_PROCESS_FIRST_SCREEN,
+        ) {
+            DoctorBookingProcessFirstScreens(
+                /*onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController*/
             )
         }
 

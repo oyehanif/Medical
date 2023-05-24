@@ -66,6 +66,7 @@ import com.hanif.medical.utils.Routes.ALL_DOCTOR_SCREEN
 import com.hanif.medical.utils.Routes.REPORT_SCREEN
 import com.hanif.medical.utils.Routes.SHOPPING_SCREEN
 import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.DoctorListingsState
 import com.hanif.medical.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
 
@@ -255,15 +256,24 @@ fun HomeScreen(
             )
             Spacer(modifier = modifier.height(10.dp))
 
-            LazyColumn()
-            {
-                items(state.companies.size) { i ->
-                    val company = state.companies[i]
-                    DoctorItem(company) {
-                        sharedViewModel.addDoctorModel(company)
-                        onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
-                    }
-                }
+            Extracted(state, sharedViewModel, onNavigate)
+        }
+    }
+}
+
+@Composable
+private fun Extracted(
+    state: DoctorListingsState,
+    sharedViewModel: DoctorSharedViewModel,
+    onNavigate: (UIEvent.Navigate) -> Unit
+) {
+    LazyColumn()
+    {
+        items(state.companies.size) { i ->
+            val company = state.companies[i]
+            DoctorItem(company) {
+                sharedViewModel.addDoctorModel(company)
+                onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
             }
         }
     }

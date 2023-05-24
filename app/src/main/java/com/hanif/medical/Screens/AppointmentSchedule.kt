@@ -1,11 +1,192 @@
 package com.hanif.medical.Screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Tab
+import androidx.compose.material.TabPosition
+import androidx.compose.material.TabRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.matrixhive.subsalert.component.notification.EmptyScreen
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.hanif.medical.R
+import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.ui.theme.DMSans
 
 @Preview
 @Composable
 fun AppointmentScheduleScreen() {
-    EmptyScreen("No Appointment Book In Past","appointment schedule not found please book appointment to see history")
+//    EmptyScreen("No Appointment Book In Past","appointment schedule not found please book appointment to see history")
+    Scaffold(topBar = {
+        CommonAppBar(
+            navigationIconAction = { /*TODO*/ },
+            title = "Schedule Appointment's"
+        )
+    }) {
+        val innerPaddingValues = it
+        Column() {
+            CustomTabs()
+        }
+    }
+}
+
+@Composable
+fun CustomTabs() {
+    var selectedIndex by remember { mutableStateOf(0) }
+
+    val list = listOf("Upcoming Appointment's", "Completed")
+
+    TabRow(selectedTabIndex = selectedIndex,
+        backgroundColor = Color(0xff1E76DA),
+        modifier = Modifier
+            .wrapContentHeight()
+            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .clip(RoundedCornerShape(50))
+            .padding(1.dp),
+        indicator = { tabPositions: List<TabPosition> ->
+            Box {}
+        }
+    ) {
+        list.forEachIndexed { index, text ->
+            val selected = selectedIndex == index
+            Tab(
+                modifier = if (selected) Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(
+                        Color.White
+                    )
+                else Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(
+                        Color(
+                            0xff1E76DA
+                        )
+                    ),
+                selected = selected,
+                onClick = { selectedIndex = index },
+                text = { Text(text = text, color = Color(0xff6FAAEE)) }
+            )
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center, modifier = Modifier.clickable { onClick() }
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.img), //rememberAsyncImagePainter(itemModel.image) ,
+                contentDescription = "", contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .weight(.3f)
+                    .clip(
+                        RoundedCornerShape(20)
+                    )
+                    .size(100.dp)
+            )
+
+            Column(Modifier.weight(.5f)) {
+                Text(
+                    text = "itemModel.name",
+                    fontSize = 20.sp,
+
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "itemModel.specialize",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(text = "31/2/2023 12:00PM", fontWeight = FontWeight.Medium, fontSize = 16.sp)
+            }
+
+            Image(
+                Icons.Default.Call, //rememberAsyncImagePainter(itemModel.image) ,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .weight(.2f)
+                    .clip(
+                        CircleShape
+                    ),
+                contentDescription = "",
+            )
+        }
+
+        Divider(thickness = 1.dp, color = Color.Gray, modifier = Modifier.padding(10.dp))
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Row(Modifier.fillMaxWidth().padding(bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "itemModel.specialize",
+                fontWeight = FontWeight.Medium,
+                fontFamily = DMSans,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth(.5f)
+                    .height(42.dp).padding(horizontal = 10.dp)
+                    .border(1.dp, Color.Blue, RoundedCornerShape(30))
+                    .padding(10.dp),
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = "itemModel.specialize",
+                fontWeight = FontWeight.Medium,
+                fontFamily = DMSans, color = Color.White,
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth().padding(horizontal = 10.dp)
+                    .height(42.dp).clip(RoundedCornerShape(30))
+                    .background(Color.Blue).padding(10.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+
+
+    }
 }
