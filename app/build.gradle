@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.hanif.medical"
-        minSdk 21
+        minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -111,4 +111,9 @@ dependencies {
     implementation ("com.airbnb.android:lottie-compose:4.1.0")
 
     implementation 'com.github.JoelKanyi:HorizontalCalendarView:1.0.4'
+
+    implementation 'com.github.SteliosPapamichail:CreditCardHelper:v1.0.0'
+
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-alpha03"
 }

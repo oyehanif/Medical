@@ -2,6 +2,7 @@ package com.hanif.medical.Screens.doctor
 
 import android.widget.Toast
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
@@ -33,12 +34,18 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,6 +62,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -62,13 +70,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.hanif.medical.R
 import com.hanif.medical.Screens.CategoryItem
 import com.hanif.medical.Screens.CommonButton
 import com.hanif.medical.Screens.CommonTextFiled
+import com.hanif.medical.Screens.card.AddPaymentCard
 import com.hanif.medical.Screens.commo.CommonAppBar
 import com.hanif.medical.Screens.commo.CustomDropDown
-import com.hanif.medical.models.ListOfCategories
 import com.hanif.medical.models.SubsCategories
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.ui.theme.Purple500
@@ -77,10 +86,12 @@ import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
 import com.joelkanyi.horizontalcalendar.HorizontalCalendarView
 
-@OptIn(ExperimentalMaterialApi::class)
-@Preview
+
 @Composable
-fun DoctorBookingProcessFirstScreens() {
+fun DoctorBookingProcessFirstScreens(
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController, modifier: Modifier = Modifier
+) {
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
         val innerPadding = it
         Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -309,15 +320,17 @@ fun DoctorBookingProcessFirstScreens() {
                     .padding(horizontal = 30.dp),
                 shape = RoundedCornerShape(50),
                 onClick = {
-                    // onNavigate(UIEvent.Navigate(Routes.SHOPPING_PRE_PAYMENT_SCREEN))
+                    onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
                 })
         }
     }
 }
 
-@Preview
 @Composable
-fun DoctorBookingProcessSecondScreen() {
+fun DoctorBookingProcessSecondScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController, modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
         val innerPadding = it
@@ -358,7 +371,8 @@ fun DoctorBookingProcessSecondScreen() {
             )
             Spacer(modifier = Modifier.height(10.dp))
             val itemList = remember { AppointmentType() }
-            LazyVerticalGrid(columns = GridCells.Fixed(3),
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
@@ -366,162 +380,259 @@ fun DoctorBookingProcessSecondScreen() {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(itemList.time, key = { it.categories }) {
-                    CategoryItem(it, itemList::onItemSelectedd)
+                    CategoryItem(it, itemList::onItemSelectedTime)
                 }
             }
-
+            CommonButton("Process",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
+                shape = RoundedCornerShape(50),
+                onClick = {
+                    onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
+                })
         }
     }
 }
 
-private enum class TabPage {
-    Self, Other
-}
 
+@OptIn(ExperimentalAnimationApi::class)
+@Preview
 @Composable
-private fun HomeTabIndicator(
-    tabPositions: List<TabPosition>, tabPage: TabPage
-) {
-    val transition = updateTransition(
-        tabPage, label = "Tab indicator"
-    )
-    val indicatorLeft by transition.animateDp(
-        transitionSpec = {
-            if (TabPage.Self isTransitioningTo TabPage.Other) {
-                // Indicator moves to the right.
-                // Low stiffness spring for the left edge so it moves slower than the right edge.
-                spring(stiffness = Spring.StiffnessVeryLow)
-            } else {
-                // Indicator moves to the left.
-                // Medium stiffness spring for the left edge so it moves faster than the right edge.
-                spring(stiffness = Spring.StiffnessMedium)
-            }
-        }, label = "Indicator left"
-    ) { page ->
-        tabPositions[page.ordinal].left
-    }
-    val indicatorRight by transition.animateDp(
-        transitionSpec = {
-            if (TabPage.Self isTransitioningTo TabPage.Other) {
-                // Indicator moves to the right
-                // Medium stiffness spring for the right edge so it moves faster than the left edge.
-                spring(stiffness = Spring.StiffnessMedium)
-            } else {
-                // Indicator moves to the left.
-                // Low stiffness spring for the right edge so it moves slower than the left edge.
-                spring(stiffness = Spring.StiffnessVeryLow)
-            }
-        }, label = "Indicator right"
-    ) { page ->
-        tabPositions[page.ordinal].right
-    }
-    val color by transition.animateColor(
-        label = "Border color"
-    ) { page ->
-        if (page == TabPage.Self) Purple700 else Purple700
-    }
-    Box(
-        Modifier
-            .fillMaxSize()
-            .wrapContentSize(align = Alignment.BottomStart)
-            .offset(x = indicatorLeft)
-            .width(indicatorRight - indicatorLeft)
-            .padding(4.dp)
-            .fillMaxSize()
-            .border(
-                BorderStroke(2.dp, color), RoundedCornerShape(4.dp)
-            )
-    )
-}
+fun DoctorBookingProcessThirdScreen() {
+    //AddPaymentCard()
+    Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
+        val innerPadding = it
+        Column() {
 
-@Composable
-private fun HomeTabBar(
-    backgroundColor: Color, tabPage: TabPage, onTabSelected: (tabPage: TabPage) -> Unit
-) {
-    TabRow(
-        selectedTabIndex = tabPage.ordinal,
-        backgroundColor = Color.Transparent, modifier = Modifier.padding(horizontal = 20.dp),
-        indicator = { tabPositions ->
-            HomeTabIndicator(tabPositions, tabPage)
-        },
+            RedioOPtionForPayment()
+            CommonButton("Process",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
+                shape = RoundedCornerShape(50),
+                onClick = {
+                    //onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
+                })
+        }
+    }
+}
+    @Preview
+    @Composable
+    fun ConformDoctorAppoinment() {
+
+    }
+
+
+    private enum class TabPage {
+        Self, Other
+    }
+
+    @Composable
+    private fun HomeTabIndicator(
+        tabPositions: List<TabPosition>, tabPage: TabPage
     ) {
-        HomeTab(
-            onClick = { onTabSelected(TabPage.Self) }, title = "My Self"
+        val transition = updateTransition(
+            tabPage, label = "Tab indicator"
         )
-        HomeTab(title = "Other Person", onClick = { onTabSelected(TabPage.Other) })
-    }
-}
-
-@Composable
-private fun HomeTab(
-    title: String, onClick: () -> Unit, modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .clickable(onClick = onClick)
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = title,
-            fontWeight = FontWeight.Bold,
-            fontFamily = DMSans,
-            fontStyle = FontStyle.Italic,
-        )
-    }
-}
-
-
-data class SubsCategories(
-    val categories: String, @DrawableRes val image: Int,
-    val isSelected: Boolean = false,
-)
-
-class AppointmentType {
-    val AppTYpe = mutableStateListOf(
-        SubsCategories("Audio Call", R.drawable.cardiologist, true),
-        SubsCategories("Video Call", R.drawable.cardiologist),
-        SubsCategories("Message", R.drawable.dental),
-    )
-
-    val time = mutableStateListOf(
-        SubsCategories("08:00 AM", R.drawable.cardiologist, true),
-        SubsCategories("08:30 AM", R.drawable.cardiologist, true),
-        SubsCategories("09:00 AM", R.drawable.cardiologist),
-        SubsCategories("09:30 AM", R.drawable.cardiologist),
-        SubsCategories("10:00 AM", R.drawable.dental),
-        SubsCategories("10.30 AM", R.drawable.cardiologist),
-        SubsCategories("11:00 AM", R.drawable.dental),
-        SubsCategories("11:30 AM", R.drawable.dental),
-        SubsCategories("12:00 PM", R.drawable.dental),
-        SubsCategories("12:30 PM", R.drawable.dental),
-        SubsCategories("03:00 PM", R.drawable.dental),
-        SubsCategories("03:30 PM", R.drawable.dental),
-        SubsCategories("04:00 PM", R.drawable.dental),
-        SubsCategories("04:30 PM", R.drawable.dental),
-        SubsCategories("05:00 PM", R.drawable.dental),
-        SubsCategories("5:30 PM", R.drawable.dental),
-        SubsCategories("6:00 PM", R.drawable.dental),
-        SubsCategories("7:00 PM", R.drawable.dental),
-        SubsCategories("8:00 PM", R.drawable.dental),
-        SubsCategories("9:00 PM", R.drawable.dental),
-    )
-
-    // were updating the entire list in a single pass using its iterator
-    fun onItemSelectedd(selectedItemData: SubsCategories) {
-        val iterator = AppTYpe.listIterator()
-
-        while (iterator.hasNext()) {
-            val listItem = iterator.next()
-
-            iterator.set(
-                if (listItem.categories == selectedItemData.categories) {
-                    selectedItemData
+        val indicatorLeft by transition.animateDp(
+            transitionSpec = {
+                if (TabPage.Self isTransitioningTo TabPage.Other) {
+                    // Indicator moves to the right.
+                    // Low stiffness spring for the left edge so it moves slower than the right edge.
+                    spring(stiffness = Spring.StiffnessVeryLow)
                 } else {
-                    listItem.copy(isSelected = false)
+                    // Indicator moves to the left.
+                    // Medium stiffness spring for the left edge so it moves faster than the right edge.
+                    spring(stiffness = Spring.StiffnessMedium)
                 }
+            }, label = "Indicator left"
+        ) { page ->
+            tabPositions[page.ordinal].left
+        }
+        val indicatorRight by transition.animateDp(
+            transitionSpec = {
+                if (TabPage.Self isTransitioningTo TabPage.Other) {
+                    // Indicator moves to the right
+                    // Medium stiffness spring for the right edge so it moves faster than the left edge.
+                    spring(stiffness = Spring.StiffnessMedium)
+                } else {
+                    // Indicator moves to the left.
+                    // Low stiffness spring for the right edge so it moves slower than the left edge.
+                    spring(stiffness = Spring.StiffnessVeryLow)
+                }
+            }, label = "Indicator right"
+        ) { page ->
+            tabPositions[page.ordinal].right
+        }
+        val color by transition.animateColor(
+            label = "Border color"
+        ) { page ->
+            if (page == TabPage.Self) Purple700 else Purple700
+        }
+        Box(
+            Modifier
+                .fillMaxSize()
+                .wrapContentSize(align = Alignment.BottomStart)
+                .offset(x = indicatorLeft)
+                .width(indicatorRight - indicatorLeft)
+                .padding(4.dp)
+                .fillMaxSize()
+                .border(
+                    BorderStroke(2.dp, color), RoundedCornerShape(4.dp)
+                )
+        )
+    }
+
+    @Composable
+    private fun HomeTabBar(
+        backgroundColor: Color, tabPage: TabPage, onTabSelected: (tabPage: TabPage) -> Unit
+    ) {
+        TabRow(
+            selectedTabIndex = tabPage.ordinal,
+            backgroundColor = Color.Transparent, modifier = Modifier.padding(horizontal = 20.dp),
+            indicator = { tabPositions ->
+                HomeTabIndicator(tabPositions, tabPage)
+            },
+        ) {
+            HomeTab(
+                onClick = { onTabSelected(TabPage.Self) }, title = "My Self"
+            )
+            HomeTab(title = "Other Person", onClick = { onTabSelected(TabPage.Other) })
+        }
+    }
+
+    @Composable
+    private fun HomeTab(
+        title: String, onClick: () -> Unit, modifier: Modifier = Modifier
+    ) {
+        Row(
+            modifier = modifier
+                .clickable(onClick = onClick)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontFamily = DMSans,
+                fontStyle = FontStyle.Italic,
             )
         }
     }
-}
+
+
+    data class SubsCategories(
+        val categories: String, @DrawableRes val image: Int,
+        val isSelected: Boolean = false,
+    )
+
+    class AppointmentType {
+        val AppTYpe = mutableStateListOf(
+            SubsCategories("Audio Call", R.drawable.cardiologist, true),
+            SubsCategories("Video Call", R.drawable.cardiologist),
+            SubsCategories("Message", R.drawable.dental),
+        )
+
+        val time = mutableStateListOf(
+            SubsCategories("08:00 AM", R.drawable.cardiologist, true),
+            SubsCategories("08:30 AM", R.drawable.cardiologist),
+            SubsCategories("09:00 AM", R.drawable.cardiologist),
+            SubsCategories("09:30 AM", R.drawable.cardiologist),
+            SubsCategories("10:00 AM", R.drawable.dental),
+            SubsCategories("10.30 AM", R.drawable.cardiologist),
+            SubsCategories("11:00 AM", R.drawable.dental),
+            SubsCategories("11:30 AM", R.drawable.dental),
+            SubsCategories("12:00 PM", R.drawable.dental),
+            SubsCategories("12:30 PM", R.drawable.dental),
+            SubsCategories("03:00 PM", R.drawable.dental),
+            SubsCategories("03:30 PM", R.drawable.dental),
+            SubsCategories("04:00 PM", R.drawable.dental),
+            SubsCategories("04:30 PM", R.drawable.dental),
+            SubsCategories("05:00 PM", R.drawable.dental),
+            SubsCategories("5:30 PM", R.drawable.dental),
+            SubsCategories("6:00 PM", R.drawable.dental),
+            SubsCategories("7:00 PM", R.drawable.dental),
+            SubsCategories("8:00 PM", R.drawable.dental),
+            SubsCategories("9:00 PM", R.drawable.dental),
+        )
+
+        // were updating the entire list in a single pass using its iterator
+        fun onItemSelectedd(selectedItemData: SubsCategories) {
+            val iterator = AppTYpe.listIterator()
+
+            while (iterator.hasNext()) {
+                val listItem = iterator.next()
+
+                iterator.set(
+                    if (listItem.categories == selectedItemData.categories) {
+                        selectedItemData
+                    } else {
+                        listItem.copy(isSelected = false)
+                    }
+                )
+            }
+        }
+
+        /** *For Date and Time  */
+        fun onItemSelectedTime(selectedItemData: SubsCategories) {
+            val iterator = time.listIterator()
+
+            while (iterator.hasNext()) {
+                val listItem = iterator.next()
+
+                iterator.set(
+                    if (listItem.categories == selectedItemData.categories) {
+                        selectedItemData
+                    } else {
+                        listItem.copy(isSelected = false)
+                    }
+                )
+            }
+        }
+    }
+
+
+    @Preview(showBackground = true)
+    @Composable
+    fun RedioOPtionForPayment() {
+        val radioOptions = listOf("Google Pay", "Apple Pay", "Paypal", "Debit card", "Credit Card")
+
+        var selectedItem by remember {
+            mutableStateOf(radioOptions[0])
+        }
+
+        Column(modifier = Modifier.selectableGroup()) {
+            radioOptions.forEach { label ->
+
+                Card(Modifier.padding(20.dp), shape = RoundedCornerShape(20)) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .selectable(
+                                selected = (selectedItem == label),
+                                onClick = { selectedItem = label },
+                                role = Role.RadioButton
+                            )
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier.padding(end = 16.dp),
+                            imageVector = if (selectedItem == label)
+                                Icons.Outlined.CheckCircle else
+                                Icons.Outlined.AddCircle,
+                            // screen readers will read the Text() compsable content
+                            // if we pass label here, they end up reading the content twice
+                            // so, pass null
+                            contentDescription = null,
+                            tint = Color.Magenta
+                        )
+                        Text(text = label)
+                    }
+                }
+            }
+        }
+    }

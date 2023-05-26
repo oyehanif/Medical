@@ -1,16 +1,23 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.hanif.medical.Screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,6 +39,10 @@ import com.hanif.medical.Screens.commo.CommonAppBar
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
+import com.steliospapamichail.creditcardmasker.utils.CardType
+import com.steliospapamichail.creditcardmasker.utils.getCardTypeFromNumber
+import com.steliospapamichail.creditcardmasker.viewtransformations.CardNumberMask
+import com.steliospapamichail.creditcardmasker.viewtransformations.ExpirationDateMask
 
 
 @Composable
@@ -60,12 +72,7 @@ fun CardPaymentScreen(
                     fontSize = 16.sp
                 )
 
-                CommonTextFiled(
-                    hint = "00000000000000",
-                    trailingIcon = true,
-                    TrailingIconImg = R.drawable.baseline_credit_card_24,
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                )
+                CardNumber()
 
                 Text(
                     text = "Name of card holder",
@@ -99,7 +106,7 @@ fun CardPaymentScreen(
                             fontSize = 16.sp
                         )
 
-                        CommonTextFiled(hint = "12/23")
+                        Expiration(onValueChange = {})
                     }
 
                     Column(
@@ -176,4 +183,50 @@ fun CardPaymentScreen(
             })
         }
     }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Expiration(expiration:String = "",onValueChange :(String) -> Unit) {
+//    var expiration by remember { mutableStateOf("") }
+    OutlinedTextField(
+        value = expiration,
+        visualTransformation = ExpirationDateMask(),
+        onValueChange = {
+            if (it.length <= 4) onValueChange(it)
+        }, label = { Text("Expiration") }
+    )
+}
+
+@Composable
+fun CardNumber(number :String ="",onValueChange :(String) -> Unit={}) {
+
+    OutlinedTextField(
+        value = number,
+        visualTransformation = CardNumberMask("-"),
+        trailingIcon = {
+            val iconRes = when (getCardTypeFromNumber(number)) {
+                CardType.VISA -> R.drawable.visa
+                CardType.MASTERCARD -> R.drawable.mastercard
+                CardType.AMERICAN_EXPRESS -> R.drawable.american_express
+                CardType.MAESTRO -> R.drawable.maestro
+                CardType.DINNERS_CLUB -> R.drawable.dinners_club
+                CardType.DISCOVER -> R.drawable.discover
+                CardType.JCB -> R.drawable.jcb
+                else -> R.drawable.ic_launcher_background
+            }
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = "card_type",
+                modifier = Modifier
+                    .height(30.dp)
+                    .width(40.dp)
+                    .padding(end = 10.dp)
+            )
+        },
+        onValueChange = {
+            if (it.length <= 16) onValueChange(it)
+        }, label = { Text("Card number") }
+    )
 }

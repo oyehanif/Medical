@@ -16,6 +16,7 @@ import com.hanif.medical.Screens.ShoppingAddressScreen
 import com.hanif.medical.Screens.ShoppingPrePaymentScreen
 import com.hanif.medical.Screens.ShoppingScreen
 import com.hanif.medical.Screens.doctor.DoctorBookingProcessFirstScreens
+import com.hanif.medical.Screens.doctor.DoctorBookingProcessSecondScreen
 import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.utils.Routes
@@ -125,8 +126,17 @@ fun HomeNavGraph(navController: NavHostController) {
             route = Routes.DOCTOR_BOOKING_PROCESS_FIRST_SCREEN,
         ) {
             DoctorBookingProcessFirstScreens(
-                /*onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController*/
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
+
+        composable(
+            route = Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN,
+        ) {
+            DoctorBookingProcessSecondScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
             )
         }
 
