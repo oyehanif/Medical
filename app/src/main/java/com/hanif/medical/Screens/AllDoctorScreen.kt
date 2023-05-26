@@ -50,28 +50,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
+import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.models.ListOfCategories
 import com.hanif.medical.models.SubsCategories
 import com.hanif.medical.repository.DoctorModel
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.HomeViewModel
 
 
 @Composable
 fun AllDoctorScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController, modifier: Modifier = Modifier
+    navController: NavController, modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
+    sharedViewModel: DoctorSharedViewModel
 ) {
+
+    val state = viewModel.state
     Column(
         modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Doctors Category's",
             fontWeight = FontWeight.Bold,
             modifier = modifier.fillMaxWidth(), textAlign = TextAlign.Start,
-          fontSize = 20.sp,
+            fontSize = 20.sp,
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -79,7 +84,6 @@ fun AllDoctorScreen(
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
                 .padding(top = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -88,13 +92,7 @@ fun AllDoctorScreen(
             }
         }
 
-       /* LazyColumn() {
-            items(20) {
-                DoctorItem(company) {
-                    onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
-                }
-            }
-        }*/
+        DoctorListView(state, sharedViewModel, onNavigate)
     }
 }
 
@@ -129,7 +127,6 @@ fun CategoryItem(subsCategories: SubsCategories, onSelectChanged: (SubsCategorie
 }
 
 
-
 @Composable
 fun DoctorItem(itemModel: DoctorModel, onClick: () -> Unit = {}) {
     Card(
@@ -142,7 +139,7 @@ fun DoctorItem(itemModel: DoctorModel, onClick: () -> Unit = {}) {
             horizontalArrangement = Arrangement.Center, modifier = Modifier.clickable { onClick() }
         ) {
             Image(
-                    painter = rememberAsyncImagePainter(itemModel.image) ,//painterResource(id = R.drawable.img),
+                painter = rememberAsyncImagePainter(itemModel.image),//painterResource(id = R.drawable.img),
                 contentDescription = "",
                 modifier = Modifier
                     .padding(10.dp)

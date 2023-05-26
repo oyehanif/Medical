@@ -33,6 +33,7 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +52,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -76,8 +76,8 @@ fun HomeScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier,
-    sharedViewModel: DoctorSharedViewModel,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel ,
+    sharedViewModel: DoctorSharedViewModel
 ) {
 
 
@@ -87,8 +87,9 @@ fun HomeScreen(
     val scaffoldState = rememberScaffoldState()
     val state = viewModel.state
 
-//    val paddingValues = it
-    Box(modifier = modifier.fillMaxSize()) {
+    Scaffold(modifier = modifier.fillMaxSize()) {
+    val paddingValues = it
+
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -256,13 +257,13 @@ fun HomeScreen(
             )
             Spacer(modifier = modifier.height(10.dp))
 
-            Extracted(state, sharedViewModel, onNavigate)
+            DoctorListView(state, sharedViewModel, onNavigate)
         }
     }
 }
 
 @Composable
-private fun Extracted(
+fun DoctorListView(
     state: DoctorListingsState,
     sharedViewModel: DoctorSharedViewModel,
     onNavigate: (UIEvent.Navigate) -> Unit

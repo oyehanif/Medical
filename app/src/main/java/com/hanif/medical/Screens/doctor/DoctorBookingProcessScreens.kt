@@ -45,6 +45,7 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,10 +68,16 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.hanif.medical.R
 import com.hanif.medical.Screens.CategoryItem
 import com.hanif.medical.Screens.CommonButton
@@ -90,7 +97,8 @@ import com.joelkanyi.horizontalcalendar.HorizontalCalendarView
 @Composable
 fun DoctorBookingProcessFirstScreens(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController, modifier: Modifier = Modifier
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
         val innerPadding = it
@@ -329,7 +337,8 @@ fun DoctorBookingProcessFirstScreens(
 @Composable
 fun DoctorBookingProcessSecondScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController, modifier: Modifier = Modifier
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
@@ -389,250 +398,325 @@ fun DoctorBookingProcessSecondScreen(
                     .padding(horizontal = 30.dp),
                 shape = RoundedCornerShape(50),
                 onClick = {
-                    onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
+                    onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN))
                 })
         }
     }
 }
 
 
-@OptIn(ExperimentalAnimationApi::class)
-@Preview
 @Composable
-fun DoctorBookingProcessThirdScreen() {
-    //AddPaymentCard()
+fun DoctorBookingProcessThirdScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit, navController: NavController
+) {
+
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
         val innerPadding = it
-        Column() {
+        var selectedOption = ""
+        Column(verticalArrangement = Arrangement.SpaceBetween) {
+            Column() {
 
-            RedioOPtionForPayment()
+                Text(
+                    text = "Payments Options",
+                    Modifier
+                        .padding(horizontal = 10.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 20.sp
+                )
+                RedioOPtionForPayment() {
+                    selectedOption = it
+                }
+            }
             CommonButton("Process",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp),
                 shape = RoundedCornerShape(50),
                 onClick = {
-                    //onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
+//                    if (selectedOption == "Credit Card") onNavigate(UIEvent.Navigate(Routes.ADD_CARD_SCREEN)) else
+                        onNavigate(UIEvent.Navigate(Routes.CONFORM_DOCTOR_APPOINTMENT))
                 })
         }
     }
 }
-    @Preview
-    @Composable
-    fun ConformDoctorAppoinment() {
-
-    }
 
 
-    private enum class TabPage {
-        Self, Other
-    }
-
-    @Composable
-    private fun HomeTabIndicator(
-        tabPositions: List<TabPosition>, tabPage: TabPage
-    ) {
-        val transition = updateTransition(
-            tabPage, label = "Tab indicator"
+@Composable
+fun ConformDoctorAppointment(
+    onNavigate: (UIEvent.Navigate) -> Unit, navController: NavController
+) {
+    Scaffold(topBar = {
+        CommonAppBar(
+            navigationIconAction = {},
+            title = "Shopping Address"
         )
-        val indicatorLeft by transition.animateDp(
-            transitionSpec = {
-                if (TabPage.Self isTransitioningTo TabPage.Other) {
-                    // Indicator moves to the right.
-                    // Low stiffness spring for the left edge so it moves slower than the right edge.
-                    spring(stiffness = Spring.StiffnessVeryLow)
-                } else {
-                    // Indicator moves to the left.
-                    // Medium stiffness spring for the left edge so it moves faster than the right edge.
-                    spring(stiffness = Spring.StiffnessMedium)
-                }
-            }, label = "Indicator left"
-        ) { page ->
-            tabPositions[page.ordinal].left
-        }
-        val indicatorRight by transition.animateDp(
-            transitionSpec = {
-                if (TabPage.Self isTransitioningTo TabPage.Other) {
-                    // Indicator moves to the right
-                    // Medium stiffness spring for the right edge so it moves faster than the left edge.
-                    spring(stiffness = Spring.StiffnessMedium)
-                } else {
-                    // Indicator moves to the left.
-                    // Low stiffness spring for the right edge so it moves slower than the left edge.
-                    spring(stiffness = Spring.StiffnessVeryLow)
-                }
-            }, label = "Indicator right"
-        ) { page ->
-            tabPositions[page.ordinal].right
-        }
-        val color by transition.animateColor(
-            label = "Border color"
-        ) { page ->
-            if (page == TabPage.Self) Purple700 else Purple700
-        }
-        Box(
-            Modifier
-                .fillMaxSize()
-                .wrapContentSize(align = Alignment.BottomStart)
-                .offset(x = indicatorLeft)
-                .width(indicatorRight - indicatorLeft)
-                .padding(4.dp)
-                .fillMaxSize()
-                .border(
-                    BorderStroke(2.dp, color), RoundedCornerShape(4.dp)
-                )
-        )
-    }
+    }) { paddingValues ->
 
-    @Composable
-    private fun HomeTabBar(
-        backgroundColor: Color, tabPage: TabPage, onTabSelected: (tabPage: TabPage) -> Unit
-    ) {
-        TabRow(
-            selectedTabIndex = tabPage.ordinal,
-            backgroundColor = Color.Transparent, modifier = Modifier.padding(horizontal = 20.dp),
-            indicator = { tabPositions ->
-                HomeTabIndicator(tabPositions, tabPage)
-            },
+        val innerPaddings = paddingValues
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            HomeTab(
-                onClick = { onTabSelected(TabPage.Self) }, title = "My Self"
+
+            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.coform_doctor_booking))
+            val progress by animateLottieCompositionAsState(
+                composition = composition,
+                iterations = LottieConstants.IterateForever
             )
-            HomeTab(title = "Other Person", onClick = { onTabSelected(TabPage.Other) })
-        }
-    }
+            LottieAnimation(
+                composition = composition,
+                progress = progress,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.7f),
+            )
 
-    @Composable
-    private fun HomeTab(
-        title: String, onClick: () -> Unit, modifier: Modifier = Modifier
-    ) {
-        Row(
-            modifier = modifier
-                .clickable(onClick = onClick)
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
             Text(
-                text = title,
-                fontWeight = FontWeight.Bold,
+                text = "Your Appointment with Dr.Hanif was Successfully booked 🥳",
+                Modifier.padding(20.dp),
+                fontWeight = FontWeight.Medium,
                 fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
+                fontStyle = FontStyle.Normal, textAlign = TextAlign.Center,
+                maxLines = 3,
+                fontSize = 14.sp
             )
         }
     }
+}
 
 
-    data class SubsCategories(
-        val categories: String, @DrawableRes val image: Int,
-        val isSelected: Boolean = false,
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun AddPaymentCardScreen(
+    onNavigate: (UIEvent.Navigate) -> Unit, navController: NavController
+) {
+    //AddPaymentCard()
+}
+
+
+private enum class TabPage {
+    Self, Other
+}
+
+@Composable
+private fun HomeTabIndicator(
+    tabPositions: List<TabPosition>, tabPage: TabPage
+) {
+    val transition = updateTransition(
+        tabPage, label = "Tab indicator"
+    )
+    val indicatorLeft by transition.animateDp(
+        transitionSpec = {
+            if (TabPage.Self isTransitioningTo TabPage.Other) {
+                // Indicator moves to the right.
+                // Low stiffness spring for the left edge so it moves slower than the right edge.
+                spring(stiffness = Spring.StiffnessVeryLow)
+            } else {
+                // Indicator moves to the left.
+                // Medium stiffness spring for the left edge so it moves faster than the right edge.
+                spring(stiffness = Spring.StiffnessMedium)
+            }
+        }, label = "Indicator left"
+    ) { page ->
+        tabPositions[page.ordinal].left
+    }
+    val indicatorRight by transition.animateDp(
+        transitionSpec = {
+            if (TabPage.Self isTransitioningTo TabPage.Other) {
+                // Indicator moves to the right
+                // Medium stiffness spring for the right edge so it moves faster than the left edge.
+                spring(stiffness = Spring.StiffnessMedium)
+            } else {
+                // Indicator moves to the left.
+                // Low stiffness spring for the right edge so it moves slower than the left edge.
+                spring(stiffness = Spring.StiffnessVeryLow)
+            }
+        }, label = "Indicator right"
+    ) { page ->
+        tabPositions[page.ordinal].right
+    }
+    val color by transition.animateColor(
+        label = "Border color"
+    ) { page ->
+        if (page == TabPage.Self) Purple700 else Purple700
+    }
+    Box(
+        Modifier
+            .fillMaxSize()
+            .wrapContentSize(align = Alignment.BottomStart)
+            .offset(x = indicatorLeft)
+            .width(indicatorRight - indicatorLeft)
+            .padding(4.dp)
+            .fillMaxSize()
+            .border(
+                BorderStroke(2.dp, color), RoundedCornerShape(4.dp)
+            )
+    )
+}
+
+@Composable
+private fun HomeTabBar(
+    backgroundColor: Color, tabPage: TabPage, onTabSelected: (tabPage: TabPage) -> Unit
+) {
+    TabRow(
+        selectedTabIndex = tabPage.ordinal,
+        backgroundColor = Color.Transparent, modifier = Modifier.padding(horizontal = 20.dp),
+        indicator = { tabPositions ->
+            HomeTabIndicator(tabPositions, tabPage)
+        },
+    ) {
+        HomeTab(
+            onClick = { onTabSelected(TabPage.Self) }, title = "My Self"
+        )
+        HomeTab(title = "Other Person", onClick = { onTabSelected(TabPage.Other) })
+    }
+}
+
+@Composable
+private fun HomeTab(
+    title: String, onClick: () -> Unit, modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .clickable(onClick = onClick)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = title,
+            fontWeight = FontWeight.Bold,
+            fontFamily = DMSans,
+            fontStyle = FontStyle.Italic,
+        )
+    }
+}
+
+
+data class SubsCategories(
+    val categories: String, @DrawableRes val image: Int,
+    val isSelected: Boolean = false,
+)
+
+class AppointmentType {
+    val AppTYpe = mutableStateListOf(
+        SubsCategories("Audio Call", R.drawable.cardiologist, true),
+        SubsCategories("Video Call", R.drawable.cardiologist),
+        SubsCategories("Message", R.drawable.dental),
     )
 
-    class AppointmentType {
-        val AppTYpe = mutableStateListOf(
-            SubsCategories("Audio Call", R.drawable.cardiologist, true),
-            SubsCategories("Video Call", R.drawable.cardiologist),
-            SubsCategories("Message", R.drawable.dental),
-        )
+    val time = mutableStateListOf(
+        SubsCategories("08:00 AM", R.drawable.cardiologist, true),
+        SubsCategories("08:30 AM", R.drawable.cardiologist),
+        SubsCategories("09:00 AM", R.drawable.cardiologist),
+        SubsCategories("09:30 AM", R.drawable.cardiologist),
+        SubsCategories("10:00 AM", R.drawable.dental),
+        SubsCategories("10.30 AM", R.drawable.cardiologist),
+        SubsCategories("11:00 AM", R.drawable.dental),
+        SubsCategories("11:30 AM", R.drawable.dental),
+        SubsCategories("12:00 PM", R.drawable.dental),
+        SubsCategories("12:30 PM", R.drawable.dental),
+        SubsCategories("03:00 PM", R.drawable.dental),
+        SubsCategories("03:30 PM", R.drawable.dental),
+        SubsCategories("04:00 PM", R.drawable.dental),
+        SubsCategories("04:30 PM", R.drawable.dental),
+        SubsCategories("05:00 PM", R.drawable.dental),
+        SubsCategories("5:30 PM", R.drawable.dental),
+        SubsCategories("6:00 PM", R.drawable.dental),
+        SubsCategories("7:00 PM", R.drawable.dental),
+        SubsCategories("8:00 PM", R.drawable.dental),
+        SubsCategories("9:00 PM", R.drawable.dental),
+    )
 
-        val time = mutableStateListOf(
-            SubsCategories("08:00 AM", R.drawable.cardiologist, true),
-            SubsCategories("08:30 AM", R.drawable.cardiologist),
-            SubsCategories("09:00 AM", R.drawable.cardiologist),
-            SubsCategories("09:30 AM", R.drawable.cardiologist),
-            SubsCategories("10:00 AM", R.drawable.dental),
-            SubsCategories("10.30 AM", R.drawable.cardiologist),
-            SubsCategories("11:00 AM", R.drawable.dental),
-            SubsCategories("11:30 AM", R.drawable.dental),
-            SubsCategories("12:00 PM", R.drawable.dental),
-            SubsCategories("12:30 PM", R.drawable.dental),
-            SubsCategories("03:00 PM", R.drawable.dental),
-            SubsCategories("03:30 PM", R.drawable.dental),
-            SubsCategories("04:00 PM", R.drawable.dental),
-            SubsCategories("04:30 PM", R.drawable.dental),
-            SubsCategories("05:00 PM", R.drawable.dental),
-            SubsCategories("5:30 PM", R.drawable.dental),
-            SubsCategories("6:00 PM", R.drawable.dental),
-            SubsCategories("7:00 PM", R.drawable.dental),
-            SubsCategories("8:00 PM", R.drawable.dental),
-            SubsCategories("9:00 PM", R.drawable.dental),
-        )
+    // were updating the entire list in a single pass using its iterator
+    fun onItemSelectedd(selectedItemData: SubsCategories) {
+        val iterator = AppTYpe.listIterator()
 
-        // were updating the entire list in a single pass using its iterator
-        fun onItemSelectedd(selectedItemData: SubsCategories) {
-            val iterator = AppTYpe.listIterator()
+        while (iterator.hasNext()) {
+            val listItem = iterator.next()
 
-            while (iterator.hasNext()) {
-                val listItem = iterator.next()
-
-                iterator.set(
-                    if (listItem.categories == selectedItemData.categories) {
-                        selectedItemData
-                    } else {
-                        listItem.copy(isSelected = false)
-                    }
-                )
-            }
-        }
-
-        /** *For Date and Time  */
-        fun onItemSelectedTime(selectedItemData: SubsCategories) {
-            val iterator = time.listIterator()
-
-            while (iterator.hasNext()) {
-                val listItem = iterator.next()
-
-                iterator.set(
-                    if (listItem.categories == selectedItemData.categories) {
-                        selectedItemData
-                    } else {
-                        listItem.copy(isSelected = false)
-                    }
-                )
-            }
+            iterator.set(
+                if (listItem.categories == selectedItemData.categories) {
+                    selectedItemData
+                } else {
+                    listItem.copy(isSelected = false)
+                }
+            )
         }
     }
 
+    /** *For Date and Time  */
+    fun onItemSelectedTime(selectedItemData: SubsCategories) {
+        val iterator = time.listIterator()
 
-    @Preview(showBackground = true)
-    @Composable
-    fun RedioOPtionForPayment() {
-        val radioOptions = listOf("Google Pay", "Apple Pay", "Paypal", "Debit card", "Credit Card")
+        while (iterator.hasNext()) {
+            val listItem = iterator.next()
 
-        var selectedItem by remember {
-            mutableStateOf(radioOptions[0])
+            iterator.set(
+                if (listItem.categories == selectedItemData.categories) {
+                    selectedItemData
+                } else {
+                    listItem.copy(isSelected = false)
+                }
+            )
         }
+    }
+}
 
-        Column(modifier = Modifier.selectableGroup()) {
-            radioOptions.forEach { label ->
 
-                Card(Modifier.padding(20.dp), shape = RoundedCornerShape(20)) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .selectable(
-                                selected = (selectedItem == label),
-                                onClick = { selectedItem = label },
-                                role = Role.RadioButton
-                            )
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            modifier = Modifier.padding(end = 16.dp),
-                            imageVector = if (selectedItem == label)
-                                Icons.Outlined.CheckCircle else
-                                Icons.Outlined.AddCircle,
-                            // screen readers will read the Text() compsable content
-                            // if we pass label here, they end up reading the content twice
-                            // so, pass null
-                            contentDescription = null,
-                            tint = Color.Magenta
+@Composable
+fun RedioOPtionForPayment(onvalueChange: (String) -> Unit) {
+    val radioOptions = listOf("Google Pay", "Apple Pay", "Paypal", "Debit card", "Credit Card")
+
+    var selectedItem by remember {
+        mutableStateOf(radioOptions[0])
+    }
+
+    Column(modifier = Modifier.selectableGroup()) {
+        radioOptions.forEach { label ->
+
+            Card(
+                Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                shape = RoundedCornerShape(20)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .selectable(
+                            selected = (selectedItem == label),
+                            onClick = {
+                                selectedItem = label
+                                onvalueChange(label)
+                            },
+                            role = Role.RadioButton
                         )
-                        Text(text = label)
-                    }
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .size(24.dp),
+                        painter = if (selectedItem == label) painterResource(id = R.drawable.check_circle) else painterResource(
+                            id = R.drawable.circle
+                        ),
+                        // screen readers will read the Text() compsable content
+                        // if we pass label here, they end up reading the content twice
+                        // so, pass null
+                        contentDescription = null,
+                        tint = Color.Magenta
+                    )
+                    Text(text = label)
                 }
             }
         }
     }
+
+}

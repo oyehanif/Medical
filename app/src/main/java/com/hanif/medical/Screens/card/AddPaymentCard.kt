@@ -13,11 +13,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.hanif.medical.R
+import com.hanif.medical.utils.Routes
+import com.hanif.medical.utils.graphs.UIEvent
 
 @ExperimentalAnimationApi
 @Composable
-fun AddPaymentCard() {
+fun AddPaymentCard(onNavigate: (UIEvent.Navigate) -> Unit, navController: NavController) {
     var nameText by remember { mutableStateOf(TextFieldValue()) }
     var cardNumber by remember { mutableStateOf(TextFieldValue()) }
     var expiryNumber by remember { mutableStateOf(TextFieldValue()) }
@@ -79,7 +82,7 @@ fun AddPaymentCard() {
 
             item {
                 Button(
-                    onClick = { },
+                    onClick = { onNavigate(UIEvent.Navigate(route = Routes.CONFORM_DOCTOR_APPOINTMENT))},
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                 ) {
                     Text(

@@ -1,5 +1,6 @@
 package com.hanif.medical.utils.graphs
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
@@ -15,19 +16,27 @@ import com.hanif.medical.Screens.ReportScreen
 import com.hanif.medical.Screens.ShoppingAddressScreen
 import com.hanif.medical.Screens.ShoppingPrePaymentScreen
 import com.hanif.medical.Screens.ShoppingScreen
+import com.hanif.medical.Screens.card.AddPaymentCard
+import com.hanif.medical.Screens.doctor.AddPaymentCardScreen
+import com.hanif.medical.Screens.doctor.ConformDoctorAppointment
 import com.hanif.medical.Screens.doctor.DoctorBookingProcessFirstScreens
 import com.hanif.medical.Screens.doctor.DoctorBookingProcessSecondScreen
+import com.hanif.medical.Screens.doctor.DoctorBookingProcessThirdScreen
 import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.utils.Routes
+import com.hanif.medical.viewmodel.HomeViewModel
 import com.matrixhive.subsalert.component.notification.NotificationScreen
 import com.matrixhive.subsalert.component.setting.SettingScreen
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun HomeNavGraph(navController: NavHostController) {
 
     val shoppingSharedViewModel: ShoppingSharedViewModel = hiltViewModel()
     val doctorSharedViewModel: DoctorSharedViewModel = hiltViewModel()
+    val viewModel: HomeViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         route = Graph.HOME,
@@ -37,7 +46,7 @@ fun HomeNavGraph(navController: NavHostController) {
             HomeScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
                 navController = navController, sharedViewModel = doctorSharedViewModel
-            )
+            , viewModel = viewModel)
         }
 
         composable(
@@ -119,7 +128,7 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             AllDoctorScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController
+                navController = navController, viewModel = viewModel, sharedViewModel = doctorSharedViewModel
             )
         }
         composable(
@@ -139,6 +148,31 @@ fun HomeNavGraph(navController: NavHostController) {
                 navController = navController
             )
         }
+
+        composable(
+            route = Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN,
+        ) {
+            DoctorBookingProcessThirdScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
+        composable(
+            route = Routes.ADD_CARD_SCREEN,
+        ) {
+            AddPaymentCard(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
+        composable (
+                route = Routes.CONFORM_DOCTOR_APPOINTMENT,
+        ) {
+        ConformDoctorAppointment(
+            onNavigate = { event -> navController.navigate(event.route) },
+            navController = navController
+        )
+    }
 
         composable(
             route = Routes.ROUTE_PRE_ADD_MANUAL_SCREEN,
