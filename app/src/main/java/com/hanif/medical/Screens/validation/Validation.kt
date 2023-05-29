@@ -17,7 +17,7 @@ class Validations {
 
     fun onlyEmptyCheck(value: String, errorName: String): ValidationResult {
         return if (value.isEmpty()) {
-            ValidationResult(false, "please Select $errorName")
+            ValidationResult(false, "please Enter $errorName")
         } else {
             ValidationResult(true)
         }

@@ -1,5 +1,6 @@
 package com.hanif.medical.repository
 
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -163,12 +164,10 @@ class HomeRepository @Inject constructor(
                 .await()
             firebaseDatabase.getReference(Appointment).child(DOCTOR).child(bookingProcess.model!!.id.toString()).push().setValue(bookingProcess)
                 .await()
-            Toast.makeText(MedicalAppClass.getAppContext(), "Appointment Add Successfully", Toast.LENGTH_LONG).show()
+//            Toast.makeText(MedicalAppClass.getAppContext(), "Appointment Add Successfully", Toast.LENGTH_LONG).show()
 
-        } catch (e: Exception) {
-            Toast.makeText(MedicalAppClass.getAppContext(), e.message, Toast.LENGTH_LONG).show()
         } catch (e: FirebaseException) {
-            Toast.makeText(MedicalAppClass.getAppContext(), e.message, Toast.LENGTH_LONG).show()
+            Log.e("TAG", "insertAppointment: ${e.message.toString()}", )
         }
     }
 

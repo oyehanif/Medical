@@ -1,6 +1,5 @@
 package com.hanif.medical.Screens.doctor
 
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -43,10 +42,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -56,7 +51,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,7 +66,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -94,8 +87,8 @@ import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.ui.theme.Purple500
 import com.hanif.medical.ui.theme.Purple700
 import com.hanif.medical.utils.Routes
+import com.hanif.medical.utils.graphs.BottomBarScreen
 import com.hanif.medical.utils.graphs.UIEvent
-import com.hanif.medical.viewmodel.DoctorListingsState
 import com.hanif.medical.viewmodel.HomeViewModel
 import com.joelkanyi.horizontalcalendar.HorizontalCalendarView
 import kotlinx.coroutines.CoroutineScope
@@ -442,6 +435,7 @@ fun DoctorBookingProcessSecondScreen(
             )
             Spacer(modifier = Modifier.height(10.dp))
             val itemList = remember { AppointmentType() }
+            var selectedAppointmentTime by remember { mutableStateOf("09:00 AM" ) }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
@@ -451,6 +445,7 @@ fun DoctorBookingProcessSecondScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(itemList.time, key = { it.categories }) {
+                    if (it.isSelected) selectedAppointmentTime = it.categories
                     CategoryItem(it, itemList::onItemSelectedTime)
                 }
             }
@@ -464,7 +459,7 @@ fun DoctorBookingProcessSecondScreen(
                         sharedViewModel.addBookingProcess(
                             model!!.copy(
                                 date = date,
-                                time = "9:00 Am"
+                                time = selectedAppointmentTime
                             )
                         )
                         onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN))
@@ -481,12 +476,12 @@ fun DoctorBookingProcessSecondScreen(
 @Composable
 fun DoctorBookingProcessThirdScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController,viewmodel :HomeViewModel = hiltViewModel(),
+    navController: NavController, viewmodel: HomeViewModel = hiltViewModel(),
     sharedViewModel: DoctorSharedViewModel
 ) {
 
     val model = sharedViewModel.bookingProcessModel
-    Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
+    Scaffold(topBar = { CommonAppBar(navigationIconAction = { }, title = "Booking") }) {
         val innerPadding = it
         var selectedOption = ""
         Column(verticalArrangement = Arrangement.SpaceBetween) {
@@ -534,7 +529,12 @@ fun ConformDoctorAppointment(
 ) {
     Scaffold(topBar = {
         CommonAppBar(
-            navigationIconAction = {},
+            navigationIconAction = {
+                navController.popBackStack(
+                    BottomBarScreen.Home.route, inclusive =
+                    false
+                )
+            },
             title = "Shopping Address"
         )
     }) { paddingValues ->

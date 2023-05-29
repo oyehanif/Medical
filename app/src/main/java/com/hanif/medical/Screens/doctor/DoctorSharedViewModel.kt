@@ -31,7 +31,7 @@ class DoctorSharedViewModel @Inject constructor() :BaseViewModal(){
 
 
 data class BookingProcess(
-    val model: DoctorModel?,
+    val model: DoctorModel? = null  ,
     val bookingType :String = "",
     val appointmentType: String = "",
     val basic_gender:String = "",

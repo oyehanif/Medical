@@ -1,6 +1,7 @@
 package com.hanif.medical.Screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,10 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -30,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
+import com.hanif.medical.Screens.shopping.ShoppingProcessModel
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.utils.Routes
@@ -47,6 +53,8 @@ fun DetailShoppingScreen(
 ) {
 
     val medicineModel = sharedViewModel.medicalModel
+
+    var qty by rememberSaveable { mutableStateOf(0) }
 
     medicineModel?.let {
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
@@ -106,13 +114,19 @@ fun DetailShoppingScreen(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Image(
-                        painterResource(id = R.drawable.baseline_add_24),
-                        contentDescription = "Star"
-                    )
-                    Text(text = "1", Modifier.padding(horizontal = 10.dp))
-                    Image(
                         painterResource(id = R.drawable.baseline_horizontal_rule_24),
-                        contentDescription = "Star"
+                        contentDescription = "Star", Modifier.clickable {
+                            qty--
+                        }
+                    )
+
+                    Text(text = qty.toString(), Modifier.padding(horizontal = 10.dp))
+
+                    Image(
+                        painterResource(id = R.drawable.baseline_add_24),
+                        contentDescription = "Star", Modifier.clickable {
+                            qty++
+                        }
                     )
                 }
 
@@ -159,6 +173,7 @@ fun DetailShoppingScreen(
                         .fillMaxWidth(.5f)
                         .padding(5.dp)
                 ) {
+                    sharedViewModel.addShoppingProcessModelValue(ShoppingProcessModel(qty = qty))
                     onNavigate(UIEvent.Navigate(Routes.SHOPPING_ADDRESS_SCREEN))
                 }
                 CommonButton(

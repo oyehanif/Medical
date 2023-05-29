@@ -89,8 +89,8 @@ fun HomeScreen(
     // val todos = viewModel.fetchList.collectAsStateWithLifecycle()
 
 
-    LaunchedEffect(key1 = true ) {
-        viewModel.getSettingData()
+    LaunchedEffect(key1 = viewModel.getSettingData() ) {
+
     }
 
     val scaffoldState = rememberScaffoldState()
@@ -216,9 +216,9 @@ fun HomeScreen(
             DoctorListView(state, sharedViewModel, onNavigate)
         }
 
-        if (state.isLoading){
+      /*  if (state.isLoading){
             CommonProgress()
-        }
+        }*/
     }
 }
 

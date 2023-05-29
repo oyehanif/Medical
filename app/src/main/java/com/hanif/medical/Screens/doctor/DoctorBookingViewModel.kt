@@ -101,7 +101,7 @@ class DoctorBookingViewModel @Inject constructor() :
                 }
 
 
-                sendUiEvent(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
+                    sendUiEvent(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
             }
 
             is DoctorBookingEvent.OnWeightChange -> {
