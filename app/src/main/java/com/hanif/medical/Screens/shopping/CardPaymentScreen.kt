@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.hanif.medical.R
 import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.Screens.commo.CommonTextFiled
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent

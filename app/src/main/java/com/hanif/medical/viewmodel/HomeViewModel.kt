@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
+import com.hanif.medical.Screens.doctor.BookingProcess
 import com.hanif.medical.models.Resource
 import com.hanif.medical.repository.DoctorModel
 import com.hanif.medical.repository.HomeRepository
@@ -23,6 +24,7 @@ class HomeViewModel @Inject constructor(private val home: HomeRepository) :BaseV
 
     var state by mutableStateOf(DoctorListingsState())
     var medicineState by mutableStateOf(MedicineListingsState())
+    var appointmentState by mutableStateOf(AppointmentListingsState())
 
     init {
         /*viewModelScope.launch { getSettingData() }
@@ -31,14 +33,15 @@ class HomeViewModel @Inject constructor(private val home: HomeRepository) :BaseV
         }*/
         getSettingData()
         getMedicineDataList()
+        getAppointmentDataList()
     }
 
-    private  fun getSettingData() {
+    fun getSettingData() {
         viewModelScope.launch {
             home.fetchData().collect{result ->
                 when(result){
                     is Resource.Error -> Log.e("TAG", "getSettingData: ${result.error}", )
-                    is Resource.Loading -> Log.e("TAG", "getSettingData: Loading", )
+                    is Resource.Loading ->state = state.copy(isLoading = true)
                     is Resource.Success -> {
                         result.data?.let { listings ->
                             Log.e("TAG", "getSettingData: ${listings.size}", )
@@ -46,6 +49,7 @@ class HomeViewModel @Inject constructor(private val home: HomeRepository) :BaseV
                             state = state.copy(
                                 companies = listings
                             )
+                            state = state.copy(isLoading = false)
                         }
                     }
                 }
@@ -53,6 +57,7 @@ class HomeViewModel @Inject constructor(private val home: HomeRepository) :BaseV
         }
     }
 
+    suspend fun insertAppointment(bookingProcess: BookingProcess) =home.insertAppointment(bookingProcess)
     private  fun getMedicineDataList() {
         viewModelScope.launch {
             home.getMedicineList().collect{result ->
@@ -72,10 +77,36 @@ class HomeViewModel @Inject constructor(private val home: HomeRepository) :BaseV
             }
         }
     }
+
+    private  fun getAppointmentDataList() {
+        viewModelScope.launch {
+            home.getUserAppointment().collect{result ->
+                when(result){
+                    is Resource.Error -> Log.e("TAG", "getSettingData: ${result.error}", )
+                    is Resource.Loading -> Log.e("TAG", "getSettingData: Loading", )
+                    is Resource.Success -> {
+                        result.data?.let { listings ->
+                            Log.e("TAG", "getSettingData: ${listings.size}", )
+                            Log.e("TAG", "getSettingData: ${listings}", )
+                            appointmentState = appointmentState.copy(
+                                companies = listings
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 data class DoctorListingsState(
     val companies: List<DoctorModel> = emptyList(),
+    val isLoading: Boolean = false,
+    val searchQuery: String = ""
+)
+
+data class AppointmentListingsState(
+    val companies: List<BookingProcess> = emptyList(),
     val isLoading: Boolean = false,
     val searchQuery: String = ""
 )

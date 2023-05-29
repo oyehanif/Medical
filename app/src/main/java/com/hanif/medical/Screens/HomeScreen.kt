@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -53,9 +54,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.hanif.medical.R
+import com.hanif.medical.Screens.commo.CommonProgress
 import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.models.ListOfCategories
 import com.hanif.medical.models.SubsCategories
@@ -83,6 +87,11 @@ fun HomeScreen(
 
     //this composable function is called every single time our to-do list screen updates
     // val todos = viewModel.fetchList.collectAsStateWithLifecycle()
+
+
+    LaunchedEffect(key1 = true ) {
+        viewModel.getSettingData()
+    }
 
     val scaffoldState = rememberScaffoldState()
     val state = viewModel.state
@@ -122,39 +131,7 @@ fun HomeScreen(
                         .padding(10.dp)
                 )
             }
-            //auto Slide banner
-            val images = listOf(
-                R.drawable.img_5,
-                R.drawable.img_2,
-                R.drawable.img_3,
-                R.drawable.img_4,
-            )
-
-            Card(
-                Modifier.padding(vertical = 20.dp),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                AutoSlidingCarousel(
-                    itemsCount = images.size,
-                    itemContent = { index ->
-                        /* AsyncImage(
-                             model = ImageRequest.Builder(LocalContext.current)
-                                 .data(images[index])
-                                 .build(),
-                             contentDescription = null,
-                             contentScale = ContentScale.Crop,
-                             modifier = Modifier.height(200.dp)
-                         )*/
-                        Image(
-                            painterResource(id = images[index]),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.height(200.dp)
-                        )
-                    }
-                )
-            }
-
+            AutoSlideWindo()
             /*//Search Filed
             val (value, onValueChange) = remember { mutableStateOf("") }
 
@@ -176,27 +153,6 @@ fun HomeScreen(
                 )
             )
     */
-            //Specialist
-            Text(
-                text = "Specialist",
-                Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth(), textAlign = TextAlign.Start,
-
-                fontFamily = DMSans, fontWeight = FontWeight.Bold
-            )
-
-
-            val itemList = remember {
-                ListOfCategories()
-            }
-
-            LazyRow() {
-                items(itemList.itemDataList, key = { it.categories }) {
-                    CommonChip(it, itemList::onItemSelected)
-                }
-            }
-
             /*Services*/
             Text(
                 text = "Our Services",
@@ -259,6 +215,46 @@ fun HomeScreen(
 
             DoctorListView(state, sharedViewModel, onNavigate)
         }
+
+        if (state.isLoading){
+            CommonProgress()
+        }
+    }
+}
+
+@Composable
+private fun AutoSlideWindo() {
+    //auto Slide banner
+    val images = listOf(
+        R.drawable.img_5,
+        R.drawable.img_2,
+        R.drawable.img_3,
+        R.drawable.img_4,
+    )
+
+    Card(
+        Modifier.padding(vertical = 20.dp),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        AutoSlidingCarousel(
+            itemsCount = images.size,
+            itemContent = { index ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(images[index])
+                        .build(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.height(200.dp)
+                )
+                Image(
+                    painterResource(id = images[index]),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.height(200.dp)
+                )
+            }
+        )
     }
 }
 
@@ -268,12 +264,18 @@ fun DoctorListView(
     sharedViewModel: DoctorSharedViewModel,
     onNavigate: (UIEvent.Navigate) -> Unit
 ) {
-    LazyColumn()
-    {
-        items(state.companies.size) { i ->
+    LazyColumn() {
+        /*items(state.companies.size) { i ->
             val company = state.companies[i]
             DoctorItem(company) {
                 sharedViewModel.addDoctorModel(company)
+                onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
+            }
+        }*/
+
+        items(state.companies){
+            DoctorItem(it) {
+                sharedViewModel.addDoctorModel(it)
                 onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
             }
         }

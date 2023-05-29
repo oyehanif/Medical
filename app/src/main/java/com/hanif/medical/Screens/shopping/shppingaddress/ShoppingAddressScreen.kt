@@ -42,6 +42,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hanif.medical.R
+import com.hanif.medical.Screens.commo.CommonTextFiled
 import com.hanif.medical.Screens.shopping.shppingaddress.ShoppingAddressViewModel
 import com.hanif.medical.utils.Routes
 
@@ -267,107 +268,3 @@ fun ShoppingAddressScreen(
     }
 }
 
-
-//common field views
-@Preview(showBackground = true)
-@Composable
-fun CommonTextFiled(
-    modifier: Modifier = Modifier,
-    hint: String? = null,
-    text: String = "",
-    onValueChange: (String) -> Unit = {},
-    icon: ImageVector? = null,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    imeAction: ImeAction = ImeAction.Done,
-    trailingIcon: Boolean = false,
-    @DrawableRes TrailingIconImg: Int? = null,
-    isTrailingIconClickable: Boolean = false,
-    singleLine: Boolean = true,
-    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
-    minLines: Int = 1,
-    isError: Boolean = false,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
-    isTrailingNotDefault: Boolean = false,
-    onclick: () -> Unit = {},
-    shape: Shape = RoundedCornerShape(40),
-    errorMes: String = "",
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-
-    ) {
-    var toggleClick by rememberSaveable { mutableStateOf(false) }
-    Column() {
-        OutlinedTextField(
-            value = text,
-            onValueChange = onValueChange,
-            modifier = modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(40)),
-            keyboardOptions = KeyboardOptions(
-                KeyboardCapitalization.Characters,
-                autoCorrect = false,
-                keyboardType = keyboardType,
-                imeAction = imeAction
-            ),
-            placeholder = {
-                if (hint != null) {
-                    Text(
-                        text = hint,
-                        color = Color.Gray,
-                        fontWeight = FontWeight(400),
-                        fontSize = 14.sp
-                    )
-                }
-            },
-            visualTransformation =
-            if (!toggleClick) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                if (trailingIcon) {
-                    val image: Int = TrailingIconImg
-                        ?: if (toggleClick) {
-                            R.drawable.visibility_on
-                        } else {
-                            R.drawable.visibility_off
-                        }
-                    IconButton(
-                        onClick = {
-                            if (isTrailingIconClickable) {
-                                if (isTrailingNotDefault) {
-                                    onclick()
-                                } else {
-                                    run { toggleClick = !toggleClick }
-                                }
-                            }
-                        }
-                    ) {
-                        Icon(painter = painterResource(id = image), contentDescription = null)
-                    }
-                }
-            },
-            singleLine = singleLine,
-            maxLines = maxLines,
-            minLines = minLines,
-            /*colors = TextFieldDefaults.textFieldColors(
-                *//* backgroundColor = LocalCustomColorsPalette.current.searchBackGroundColor,
-                 cursorColor = LocalCustomColorsPalette.current.textColor,
-                 disabledLabelColor = RomanSilver,
-                 focusedIndicatorColor = Color.Transparent,
-                 unfocusedIndicatorColor = Color.Transparent,
-                 textColor = LocalCustomColorsPalette.current.textColor,*//*
-            )*/
-            shape = shape,
-            isError = isError,
-            textStyle = TextStyle()
-        )
-        AnimatedVisibility(visible = isError && errorMes != "") {
-            Text(
-                modifier = Modifier.padding(start = 8.dp),
-                text = errorMes,
-                fontSize = 14.sp,
-                color = Color.Red
-            )
-        }
-    }
-}

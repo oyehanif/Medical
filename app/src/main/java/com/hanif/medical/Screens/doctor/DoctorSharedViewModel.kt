@@ -18,4 +18,27 @@ class DoctorSharedViewModel @Inject constructor() :BaseViewModal(){
     fun addDoctorModel(model: DoctorModel){
         doctorModel = model
     }
+    var bookingProcessModel by mutableStateOf<BookingProcess?>(null)
+        private set
+
+    fun addBookingProcess(model: BookingProcess){
+        bookingProcessModel = model
+    }
+
+
 }
+
+
+
+data class BookingProcess(
+    val model: DoctorModel?,
+    val bookingType :String = "",
+    val appointmentType: String = "",
+    val basic_gender:String = "",
+    val height :String = "",
+    val weight :String = "",
+    val age :String = "",
+    val date :String = "",
+    val time :String = "",
+    val paymentOption:String = ""
+)

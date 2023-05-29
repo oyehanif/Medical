@@ -45,8 +45,10 @@ fun HomeNavGraph(navController: NavHostController) {
         composable(route = BottomBarScreen.Home.route) {
             HomeScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController, sharedViewModel = doctorSharedViewModel
-            , viewModel = viewModel)
+                navController = navController,
+                sharedViewModel = doctorSharedViewModel,
+                viewModel = viewModel
+            )
         }
 
         composable(
@@ -128,7 +130,9 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             AllDoctorScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController, viewModel = viewModel, sharedViewModel = doctorSharedViewModel
+                navController = navController,
+                viewModel = viewModel,
+                sharedViewModel = doctorSharedViewModel
             )
         }
         composable(
@@ -136,6 +140,7 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             DoctorBookingProcessFirstScreens(
                 onNavigate = { event -> navController.navigate(event.route) },
+                sharedViewModel = doctorSharedViewModel,
                 navController = navController
             )
         }
@@ -144,7 +149,7 @@ fun HomeNavGraph(navController: NavHostController) {
             route = Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN,
         ) {
             DoctorBookingProcessSecondScreen(
-                onNavigate = { event -> navController.navigate(event.route) },
+                onNavigate = { event -> navController.navigate(event.route) }, sharedViewModel = doctorSharedViewModel,
                 navController = navController
             )
         }
@@ -153,7 +158,7 @@ fun HomeNavGraph(navController: NavHostController) {
             route = Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN,
         ) {
             DoctorBookingProcessThirdScreen(
-                onNavigate = { event -> navController.navigate(event.route) },
+                onNavigate = { event -> navController.navigate(event.route) },sharedViewModel = doctorSharedViewModel,
                 navController = navController
             )
         }
@@ -165,14 +170,14 @@ fun HomeNavGraph(navController: NavHostController) {
                 navController = navController
             )
         }
-        composable (
-                route = Routes.CONFORM_DOCTOR_APPOINTMENT,
+        composable(
+            route = Routes.CONFORM_DOCTOR_APPOINTMENT,
         ) {
-        ConformDoctorAppointment(
-            onNavigate = { event -> navController.navigate(event.route) },
-            navController = navController
-        )
-    }
+            ConformDoctorAppointment(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+        }
 
         composable(
             route = Routes.ROUTE_PRE_ADD_MANUAL_SCREEN,

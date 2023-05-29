@@ -1,9 +1,11 @@
 package com.hanif.medical.Screens.commo
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 
@@ -26,7 +29,7 @@ fun CustomDropDown(
     array: Array<String>,
     text: String,
     onValueChange: (String) -> Unit,
-    hint: String,
+    hint: String,isError: Boolean = false,errorMes: String = "",
     modifier: Modifier = Modifier,
 ) {
 
@@ -77,6 +80,15 @@ fun CustomDropDown(
             shape = RoundedCornerShape(40)
         )
 
+        AnimatedVisibility(visible = isError && errorMes != "") {
+            Text(
+                modifier = Modifier.padding(start = 8.dp),
+                text = errorMes,
+                fontSize = 14.sp,
+                color = Color.Red
+            )
+        }
+
         DropdownMenu(
             expanded = mExpanded,
             onDismissRequest = { mExpanded = false },
@@ -101,4 +113,5 @@ fun CustomDropDown(
             }
         }
     }
+
 }

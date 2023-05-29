@@ -14,3 +14,5 @@ const val FORGET_PASSWORD = "forget_password_screen"
 
 
 const val USERS = "Users"
+const val DOCTOR = "DOCTOR"
+const val Appointment = "Appointment"

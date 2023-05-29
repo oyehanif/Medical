@@ -1,5 +1,6 @@
 package com.hanif.medical.Screens.doctor
 
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -46,9 +47,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -72,7 +75,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -81,9 +86,8 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.hanif.medical.R
 import com.hanif.medical.Screens.CategoryItem
 import com.hanif.medical.Screens.CommonButton
-import com.hanif.medical.Screens.CommonTextFiled
-import com.hanif.medical.Screens.card.AddPaymentCard
 import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.Screens.commo.CommonTextFiled
 import com.hanif.medical.Screens.commo.CustomDropDown
 import com.hanif.medical.models.SubsCategories
 import com.hanif.medical.ui.theme.DMSans
@@ -91,245 +95,300 @@ import com.hanif.medical.ui.theme.Purple500
 import com.hanif.medical.ui.theme.Purple700
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.DoctorListingsState
+import com.hanif.medical.viewmodel.HomeViewModel
 import com.joelkanyi.horizontalcalendar.HorizontalCalendarView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun DoctorBookingProcessFirstScreens(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
-    modifier: Modifier = Modifier
+    sharedViewModel: DoctorSharedViewModel,
+    modifier: Modifier = Modifier,
+    viewModel: DoctorBookingViewModel = hiltViewModel()
 ) {
+
+    val scaffoldState = rememberScaffoldState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                /*is UIEvent.PopBacKStackWithDestination -> {
+                    onPopBackStack(event)
+                }*/
+                is UIEvent.ShowSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message, actionLabel = event.action
+                    )
+                }
+
+                is UIEvent.Navigate -> {
+                    onNavigate(event)
+                }
+
+                else -> Unit
+            }
+        }
+    }
+
+
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
         val innerPadding = it
-        Column(Modifier.verticalScroll(rememberScrollState())) {
-            androidx.compose.material3.Card(
-                Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(20.dp),
-                shape = RoundedCornerShape(30.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(id = R.drawable.img),
-                        modifier = Modifier
-                            .size(150.dp)
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(20)),
-                        contentDescription = ""
-                    )
-                    Column(
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(vertical = 20.dp)
-                    ) {
-                        Column() {
+        val doctorModel = sharedViewModel.doctorModel
+        doctorModel?.let {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Card(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(20.dp),
+                    shape = RoundedCornerShape(30.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = rememberAsyncImagePainter(model = it.image),
+                            modifier = Modifier
+                                .size(150.dp)
+                                .padding(10.dp)
+                                .clip(RoundedCornerShape(20)),
+                            contentDescription = ""
+                        )
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(vertical = 20.dp)
+                        ) {
+                            Column() {
+                                Text(
+                                    text = it.name,
+                                    Modifier
+                                        .padding(horizontal = 10.dp)
+                                        .padding(top = 10.dp),
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = DMSans,
+                                    fontStyle = FontStyle.Italic,
+                                    maxLines = 3,
+                                    fontSize = 16.sp
+                                )
+                                Text(
+                                    text = it.specialize,
+                                    Modifier.padding(horizontal = 10.dp),
+                                    fontWeight = FontWeight.Bold,
+                                    fontFamily = DMSans,
+                                    fontStyle = FontStyle.Italic,
+                                    maxLines = 3,
+                                    fontSize = 14.sp
+                                )
+                            }
                             Text(
-                                text = "DR. Hanif Shaikh",
-                                Modifier
-                                    .padding(horizontal = 10.dp)
-                                    .padding(top = 10.dp),
+                                text = it.fees.toString(),
+                                Modifier.padding(10.dp),
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = DMSans,
                                 fontStyle = FontStyle.Italic,
                                 maxLines = 3,
                                 fontSize = 16.sp
                             )
-                            Text(
-                                text = "Dental",
-                                Modifier.padding(horizontal = 10.dp),
-                                fontWeight = FontWeight.Bold,
-                                fontFamily = DMSans,
-                                fontStyle = FontStyle.Italic,
-                                maxLines = 3,
-                                fontSize = 14.sp
-                            )
-                        }
-                        Text(
-                            text = "$30",
-                            Modifier.padding(10.dp),
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = DMSans,
-                            fontStyle = FontStyle.Italic,
-                            maxLines = 3,
-                            fontSize = 16.sp
-                        )
 
+                        }
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Booking  For",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 16.sp
+                )
+
+                var tabPage by remember { mutableStateOf(TabPage.Self) }
+                val backgroundColor by animateColorAsState(if (tabPage == TabPage.Self) Purple500 else Purple700)
+                Spacer(modifier = Modifier.height(10.dp))
+                HomeTabBar(backgroundColor = backgroundColor,
+                    tabPage = tabPage,
+                    onTabSelected = { tabPage = it })
+
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Appointment Type",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+
+
+                val itemList = remember { AppointmentType() }
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(itemList.AppTYpe, key = { it.categories }) {
+                        CategoryItem(it, itemList::onItemSelectedd)
                     }
                 }
 
-            }
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Basic Infomation",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 16.sp
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Booking  For",
-                Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
-                maxLines = 3,
-                fontSize = 16.sp
-            )
-
-            var tabPage by remember { mutableStateOf(TabPage.Self) }
-            val backgroundColor by animateColorAsState(if (tabPage == TabPage.Self) Purple500 else Purple700)
-            Spacer(modifier = Modifier.height(10.dp))
-            HomeTabBar(backgroundColor = backgroundColor,
-                tabPage = tabPage,
-                onTabSelected = { tabPage = it })
-
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Appointment Type",
-                Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
-                maxLines = 3,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
 
-            val itemList = remember { AppointmentType() }
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(itemList.AppTYpe, key = { it.categories }) {
-                    CategoryItem(it, itemList::onItemSelectedd)
-                }
-            }
+                Text(
+                    text = "Gender",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 14.sp
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "Basic Infomation",
-                Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
-                maxLines = 3,
-                fontSize = 16.sp
-            )
+                Spacer(modifier = Modifier.height(10.dp))
 
-            Spacer(modifier = Modifier.height(10.dp))
+                CustomDropDown(
+                    array = stringArrayResource(R.array.gender),
+                    text = viewModel.gender,
+                    onValueChange = {
+                        viewModel.onEvent(DoctorBookingEvent.OnGenderChange(it))
+                    },
+                    hint = stringResource(id = R.string.select_gender),
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    isError = viewModel.genderValid,
+                    errorMes = viewModel.genderErrMsg
+                )
 
-            var gender by rememberSaveable() {
-                mutableStateOf("")
-            }
+                Text(
+                    text = "Current Weight (KG)",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 14.sp
+                )
 
-            Text(
-                text = "Gender",
-                Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
-                maxLines = 3,
-                fontSize = 14.sp
-            )
+                Spacer(modifier = Modifier.height(10.dp))
 
-            Spacer(modifier = Modifier.height(10.dp))
+                CommonTextFiled(
+                    hint = "Current Weight ",
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Next, text = viewModel.weight,
+                    onValueChange = {
+                        viewModel.onEvent(DoctorBookingEvent.OnWeightChange(it))
+                    },
+                    errorMes = viewModel.weightErrMsg,
+                    isError = viewModel.weightValid,
+                )
 
-            CustomDropDown(
-                array = stringArrayResource(R.array.gender),
-                text = gender,
-                onValueChange = {
-                    /*viewModel.onEvent(
-                        EditProfileEvents.EditGender(
-                            gender = it
+                Text(
+                    text = "Current Height (CM)",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 14.sp
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                CommonTextFiled(
+                    hint = "Current Height ",
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Next, text = viewModel.height,
+                    onValueChange = {
+                        viewModel.onEvent(DoctorBookingEvent.OnHeightChange(it))
+                    },
+                    errorMes = viewModel.heightErrMsg,
+                    isError = viewModel.heightValid,
+                )
+
+                Text(
+                    text = "Age",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 14.sp,
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                CommonTextFiled(
+                    hint = "Age ",
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Done, text = viewModel.age,
+                    onValueChange = {
+                        viewModel.onEvent(DoctorBookingEvent.OnAgeChange(it))
+                    },
+                    errorMes = viewModel.ageErrMsg,
+                    isError = viewModel.ageValid,
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+
+                CommonButton("Process",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp),
+                    shape = RoundedCornerShape(50),
+                    onClick = {
+                        sharedViewModel.addBookingProcess(
+                            model = BookingProcess(
+                                sharedViewModel.doctorModel!!,
+                                bookingType = tabPage.name,
+                                appointmentType = "Audio call",
+                                basic_gender = viewModel.gender,
+                                height = viewModel.height,
+                                weight = viewModel.weight,
+                                age = viewModel.age
+                            )
                         )
-                    )*/
-                    gender = it
-                },
-                hint = stringResource(id = R.string.select_gender),
-                modifier = Modifier.padding(horizontal = 20.dp)
-            )
-
-            Text(
-                text = "Current Weight (KG)",
-                Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
-                maxLines = 3,
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            CommonTextFiled(
-                hint = "Current Weight ",
-                modifier = Modifier.padding(horizontal = 20.dp),
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Next
-            )
-
-            Text(
-                text = "Current Height (CM)",
-                Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
-                maxLines = 3,
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            CommonTextFiled(
-                hint = "Current Height ",
-                modifier = Modifier.padding(horizontal = 20.dp),
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Next
-            )
-
-            Text(
-                text = "Age",
-                Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp),
-                fontWeight = FontWeight.Bold,
-                fontFamily = DMSans,
-                fontStyle = FontStyle.Italic,
-                maxLines = 3,
-                fontSize = 14.sp
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            CommonTextFiled(
-                hint = "Age ",
-                modifier = Modifier.padding(horizontal = 20.dp),
-                keyboardType = KeyboardType.Phone,
-                imeAction = ImeAction.Done
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-
-            CommonButton("Process",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
-                shape = RoundedCornerShape(50),
-                onClick = {
-                    onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN))
-                })
+                        viewModel.onEvent(DoctorBookingEvent.OnSubmitClick)
+                    })
+            }
         }
     }
 }
@@ -337,10 +396,12 @@ fun DoctorBookingProcessFirstScreens(
 @Composable
 fun DoctorBookingProcessSecondScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController,
+    navController: NavController, sharedViewModel: DoctorSharedViewModel,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val model = sharedViewModel.bookingProcessModel
+    var date = ""
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
         val innerPadding = it
         Column() {
@@ -363,6 +424,7 @@ fun DoctorBookingProcessSecondScreen(
                 unSelectedCardColor = Color.LightGray,
                 onDayClick = { day ->
                     Toast.makeText(context, day.toString(), Toast.LENGTH_SHORT).show()
+                    date = day.toString()
                 })
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -398,7 +460,18 @@ fun DoctorBookingProcessSecondScreen(
                     .padding(horizontal = 30.dp),
                 shape = RoundedCornerShape(50),
                 onClick = {
-                    onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN))
+                    if (date.isNotEmpty()) {
+                        sharedViewModel.addBookingProcess(
+                            model!!.copy(
+                                date = date,
+                                time = "9:00 Am"
+                            )
+                        )
+                        onNavigate(UIEvent.Navigate(Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN))
+                    } else {
+                        Toast.makeText(context, "Please Select a date", Toast.LENGTH_SHORT).show()
+                    }
+
                 })
         }
     }
@@ -407,9 +480,12 @@ fun DoctorBookingProcessSecondScreen(
 
 @Composable
 fun DoctorBookingProcessThirdScreen(
-    onNavigate: (UIEvent.Navigate) -> Unit, navController: NavController
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController,viewmodel :HomeViewModel = hiltViewModel(),
+    sharedViewModel: DoctorSharedViewModel
 ) {
 
+    val model = sharedViewModel.bookingProcessModel
     Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
         val innerPadding = it
         var selectedOption = ""
@@ -427,7 +503,7 @@ fun DoctorBookingProcessThirdScreen(
                     maxLines = 3,
                     fontSize = 20.sp
                 )
-                RedioOPtionForPayment() {
+                val option = RedioOPtionForPayment() {
                     selectedOption = it
                 }
             }
@@ -437,8 +513,15 @@ fun DoctorBookingProcessThirdScreen(
                     .padding(horizontal = 30.dp),
                 shape = RoundedCornerShape(50),
                 onClick = {
-//                    if (selectedOption == "Credit Card") onNavigate(UIEvent.Navigate(Routes.ADD_CARD_SCREEN)) else
-                        onNavigate(UIEvent.Navigate(Routes.CONFORM_DOCTOR_APPOINTMENT))
+                    sharedViewModel.addBookingProcess(
+                        model!!.copy(
+                            paymentOption = selectedOption
+                        )
+                    )
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewmodel.insertAppointment(sharedViewModel.bookingProcessModel!!)
+                    }
+                    onNavigate(UIEvent.Navigate(Routes.CONFORM_DOCTOR_APPOINTMENT))
                 })
         }
     }
@@ -500,7 +583,7 @@ fun AddPaymentCardScreen(
 }
 
 
-private enum class TabPage {
+enum class TabPage {
     Self, Other
 }
 

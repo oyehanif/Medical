@@ -128,7 +128,7 @@ fun DetailDoctorScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "345",
+                                text = it.patient.toString(),
                                 fontSize = 18.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -146,7 +146,7 @@ fun DetailDoctorScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "4.9",
+                                text = it.rating,
                                 fontSize = 18.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -157,14 +157,14 @@ fun DetailDoctorScreen(
                         //Experience
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = "About", fontSize = 16.sp,
+                                text = "Experience", fontSize = 16.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 fontWeight = FontWeight.Light
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "6 Years",
+                                text = it.exp.toString(),
                                 fontSize = 18.sp,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
@@ -194,7 +194,7 @@ fun DetailDoctorScreen(
                     )
 
                     Text(
-                        text = "dr.liya Davis is a board certified detntist specializing in intervertional Dentist , dr.liya Davis is a board certified detntist specializing in intervertional Dentist , dr.liya Davis is a board certified detntist specializing in intervertional Dentist , ",
+                        text = it.desc,
                         fontSize = 16.sp,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Light

@@ -1,5 +1,6 @@
 package com.hanif.medical.Screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -22,7 +24,6 @@ import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
@@ -42,14 +43,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
 import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.Screens.doctor.BookingProcess
+import com.hanif.medical.application.MedicalAppClass
 import com.hanif.medical.ui.theme.DMSans
+import com.hanif.medical.viewmodel.HomeViewModel
 
 @Preview
 @Composable
-fun AppointmentScheduleScreen() {
+fun AppointmentScheduleScreen(viewModel: HomeViewModel = hiltViewModel()) {
 //    EmptyScreen("No Appointment Book In Past","appointment schedule not found please book appointment to see history")
+    val state = viewModel.appointmentState
     Scaffold(topBar = {
         CommonAppBar(
             navigationIconAction = { /*TODO*/ },
@@ -59,6 +66,15 @@ fun AppointmentScheduleScreen() {
         val innerPaddingValues = it
         Column() {
             CustomTabs()
+
+            LazyColumn() {
+                items(state.companies.size) { i ->
+                    val bookingProcessModel: BookingProcess = state.companies[i]
+                    ItemScheduleAppointment(bookingProcessModel) {
+
+                    }
+                }
+            }
         }
     }
 }
@@ -104,9 +120,8 @@ fun CustomTabs() {
 }
 
 
-@Preview
 @Composable
-fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
+fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {}) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,7 +132,7 @@ fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
             horizontalArrangement = Arrangement.Center, modifier = Modifier.clickable { onClick() }
         ) {
             Image(
-                painter = painterResource(id = R.drawable.img), //rememberAsyncImagePainter(itemModel.image) ,
+                painter = rememberAsyncImagePainter(itemModel.model!!.image),
                 contentDescription = "", contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .padding(10.dp)
@@ -130,18 +145,22 @@ fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
 
             Column(Modifier.weight(.5f)) {
                 Text(
-                    text = "itemModel.name",
+                    text = itemModel.model.name,
                     fontSize = 20.sp,
 
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "itemModel.specialize",
+                    text = itemModel.model.specialize,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(text = "31/2/2023 12:00PM", fontWeight = FontWeight.Medium, fontSize = 16.sp)
+                Text(
+                    text = itemModel.date + " " + itemModel.time,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 16.sp
+                )
             }
 
             Image(
@@ -151,7 +170,16 @@ fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
                     .weight(.2f)
                     .clip(
                         CircleShape
-                    ),
+                    )
+                    .clickable {
+                        Toast
+                            .makeText(
+                                MedicalAppClass.getAppContext(),
+                                "Call Clicked",
+                                Toast.LENGTH_LONG
+                            )
+                            .show()
+                    },
                 contentDescription = "",
             )
         }
@@ -160,7 +188,11 @@ fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Row(Modifier.fillMaxWidth().padding(bottom = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = "itemModel.specialize",
                 fontWeight = FontWeight.Medium,
@@ -168,7 +200,8 @@ fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
                 fontSize = 12.sp,
                 modifier = Modifier
                     .fillMaxWidth(.5f)
-                    .height(42.dp).padding(horizontal = 10.dp)
+                    .height(42.dp)
+                    .padding(horizontal = 10.dp)
                     .border(1.dp, Color.Blue, RoundedCornerShape(30))
                     .padding(10.dp),
                 textAlign = TextAlign.Center
@@ -180,9 +213,12 @@ fun ItemScheduleAppointment(onClick: () -> Unit = {}) {
                 fontFamily = DMSans, color = Color.White,
                 fontSize = 12.sp,
                 modifier = Modifier
-                    .fillMaxWidth().padding(horizontal = 10.dp)
-                    .height(42.dp).clip(RoundedCornerShape(30))
-                    .background(Color.Blue).padding(10.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+                    .height(42.dp)
+                    .clip(RoundedCornerShape(30))
+                    .background(Color.Blue)
+                    .padding(10.dp),
                 textAlign = TextAlign.Center
             )
         }

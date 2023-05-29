@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }*/
                 RootNavigationGraph(
-                    navController = rememberNavController(),
+                    navController = rememberNavController(),if (splashViewModel.currentUser.value != null) 1 else 0,
                     if (startDestination) 1 else 0
                 )
             }

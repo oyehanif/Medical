@@ -6,14 +6,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 @Composable
-fun RootNavigationGraph(navController: NavHostController, prefKeys: Int) {
+fun RootNavigationGraph(navController: NavHostController, prefKeysForIsLogin: Int , prefKeysForIsOnBoarding: Int) {
 
     NavHost(
         navController = navController,
         route = Graph.ROOT,
-        startDestination = if (prefKeys != 0) Graph.HOME else Graph.AUTHENTICATION
+        startDestination = if (prefKeysForIsLogin != 0) Graph.HOME else Graph.AUTHENTICATION
     ) {
-        authNavGraph(navController = navController,0)
+        authNavGraph(navController = navController,prefKeysForIsOnBoarding)
         composable(route = Graph.HOME) {
             HomeNav()
         }

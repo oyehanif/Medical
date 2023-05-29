@@ -211,12 +211,6 @@ fun commonTextFiled(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp), shape = RoundedCornerShape(12.dp),
-        keyboardOptions = KeyboardOptions(
-            KeyboardCapitalization.Characters,
-            autoCorrect = false,
-            keyboardType = keyboardType, imeAction
-        ),
-
         placeholder = {
             if (hint != null) {
                 Text(text = hint)
