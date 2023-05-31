@@ -31,6 +31,8 @@ import com.hanif.medical.ui.theme.DMSans
 import androidx.compose.ui.text.input.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hanif.medical.Screens.commo.CommonTextFiled
+import com.hanif.medical.Screens.shopping.ShoppingProcessModel
+import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.Screens.shopping.shppingaddress.ShoppingAddressEvent
 import com.hanif.medical.Screens.shopping.shppingaddress.ShoppingAddressViewModel
 import com.hanif.medical.utils.Routes
@@ -43,12 +45,14 @@ fun ShoppingAddressScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier,
+    sharedViewModel: ShoppingSharedViewModel,
+    onPopBackStack: () -> Unit,
     viewModel: ShoppingAddressViewModel = hiltViewModel()
 ) {
     var isRemeber by rememberSaveable {
         mutableStateOf(false)
     }
-
+    val model = sharedViewModel.shoppingProcessModel
     val scaffoldState = rememberScaffoldState()
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -60,6 +64,10 @@ fun ShoppingAddressScreen(
                     scaffoldState.snackbarHostState.showSnackbar(
                         message = event.message, actionLabel = event.action
                     )
+                }
+
+                UIEvent.PopBackStack -> {
+                    onPopBackStack()
                 }
 
                 is UIEvent.Navigate -> {
@@ -74,7 +82,9 @@ fun ShoppingAddressScreen(
 
     Scaffold(topBar = {
         CommonAppBar(
-            navigationIconAction = {},
+            navigationIconAction = {
+                viewModel.onEvent(ShoppingAddressEvent.OnPopBackstack)
+            },
             title = "Shopping Address"
         )
     }) { paddingValues ->
@@ -97,14 +107,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "Hanif",
+            CommonTextFiled(
+                hint = "Hanif",
                 text = viewModel.name,
                 onValueChange = { string ->
                     viewModel.onEvent(ShoppingAddressEvent.FullName(string))
                 },
                 errorMes = viewModel.nameErrMsg,
                 isError = viewModel.nameValid,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
 
             Text(
                 text = "Mobile Number",
@@ -116,14 +128,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "90xxxxxxxxxx",
+            CommonTextFiled(
+                hint = "90xxxxxxxxxx",
                 text = viewModel.phone,
                 onValueChange = { string ->
                     viewModel.onEvent(ShoppingAddressEvent.Mobile(string))
                 },
                 errorMes = viewModel.phoneErrMsg,
                 isError = viewModel.phoneNameValid,
-                imeAction = ImeAction.Next, keyboardType = KeyboardType.Number)
+                imeAction = ImeAction.Next, keyboardType = KeyboardType.Number
+            )
 
             Text(
                 text = "Flat, House No., Building",
@@ -135,14 +149,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = " Xyz xxxxxxxxxx",
+            CommonTextFiled(
+                hint = " Xyz xxxxxxxxxx",
                 text = viewModel.address,
                 onValueChange = { string ->
                     viewModel.onEvent(ShoppingAddressEvent.FlatHouse(string))
                 },
                 errorMes = viewModel.addressMsg,
                 isError = viewModel.addressValid,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
 
             Text(
                 text = "Area, Street",
@@ -154,14 +170,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = " Xyz xxxxxxxxxx",
+            CommonTextFiled(
+                hint = " Xyz xxxxxxxxxx",
                 text = viewModel.area,
                 onValueChange = { string ->
-                     viewModel.onEvent(ShoppingAddressEvent.AreaStreet(string))
+                    viewModel.onEvent(ShoppingAddressEvent.AreaStreet(string))
                 },
-                errorMes = viewModel.areaMsg1   ,
+                errorMes = viewModel.areaMsg1,
                 isError = viewModel.areaValid,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
 
             Text(
                 text = "Landmark",
@@ -173,14 +191,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = " Xyz",
+            CommonTextFiled(
+                hint = " Xyz",
                 text = viewModel.landMark,
                 onValueChange = { string ->
-                     viewModel.onEvent(ShoppingAddressEvent.Landmark(string))
+                    viewModel.onEvent(ShoppingAddressEvent.Landmark(string))
                 },
                 errorMes = viewModel.landMarkMsg,
                 isError = viewModel.landMarkValid,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
 
             Text(
                 text = "Pincode",
@@ -192,14 +212,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "123456",
+            CommonTextFiled(
+                hint = "123456",
                 text = viewModel.pinCode,
                 onValueChange = { string ->
-                     viewModel.onEvent(ShoppingAddressEvent.PinCode(string))
+                    viewModel.onEvent(ShoppingAddressEvent.PinCode(string))
                 },
                 errorMes = viewModel.pinCodeMsg,
                 isError = viewModel.pinCodeValid,
-                imeAction = ImeAction.Next, keyboardType = KeyboardType.Number)
+                imeAction = ImeAction.Next, keyboardType = KeyboardType.Number
+            )
 
             Text(
                 text = "Town/City",
@@ -211,14 +233,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "abcd",
+            CommonTextFiled(
+                hint = "abcd",
                 text = viewModel.city,
                 onValueChange = { string ->
-                     viewModel.onEvent(ShoppingAddressEvent.TownCity(string))
+                    viewModel.onEvent(ShoppingAddressEvent.TownCity(string))
                 },
                 errorMes = viewModel.cityMsg,
                 isError = viewModel.cityValid,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
 
             Text(
                 text = "State",
@@ -230,14 +254,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "abcd",
+            CommonTextFiled(
+                hint = "abcd",
                 text = viewModel.state,
                 onValueChange = { string ->
-                     viewModel.onEvent(ShoppingAddressEvent.State(string))
+                    viewModel.onEvent(ShoppingAddressEvent.State(string))
                 },
                 errorMes = viewModel.stateMsg,
                 isError = viewModel.stateValid,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
 
             Text(
                 text = "Country",
@@ -249,14 +275,16 @@ fun ShoppingAddressScreen(
                 fontSize = 16.sp
             )
 
-            CommonTextFiled(hint = "abcd",
+            CommonTextFiled(
+                hint = "abcd",
                 text = viewModel.country,
                 onValueChange = { string ->
-                     viewModel.onEvent(ShoppingAddressEvent.Country(string))
+                    viewModel.onEvent(ShoppingAddressEvent.Country(string))
                 },
                 errorMes = viewModel.countryMsg,
                 isError = viewModel.countryValid,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Done
+            )
 
             Row(
                 Modifier
@@ -275,6 +303,20 @@ fun ShoppingAddressScreen(
             CommonButton("Save", modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
+                sharedViewModel.addShoppingProcessModelValue(
+                    model!!.copy(
+                        medicineModel = sharedViewModel.medicalModel,
+                        fullName = viewModel.name,
+                        mobileNumber = viewModel.phone,
+                        flat_house = viewModel.address,
+                        area_street = viewModel.area,
+                        landmark = viewModel.landMark,
+                        pin_code = viewModel.pinCode,
+                        town_city = viewModel.city,
+                        state = viewModel.state,
+                        country = viewModel.country
+                    )
+                )
                 viewModel.onEvent(ShoppingAddressEvent.OnSubmitClick)
             })
         }

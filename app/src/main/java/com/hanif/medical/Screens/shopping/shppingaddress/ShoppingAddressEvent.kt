@@ -13,4 +13,5 @@ sealed class ShoppingAddressEvent {
     data class Country(val country: String) : ShoppingAddressEvent()
     data class PaymentOption(val PaymentOption: String) : ShoppingAddressEvent()
     object OnSubmitClick : ShoppingAddressEvent()
+    object OnPopBackstack : ShoppingAddressEvent()
 }

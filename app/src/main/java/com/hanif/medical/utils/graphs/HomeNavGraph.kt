@@ -24,6 +24,7 @@ import com.hanif.medical.Screens.doctor.DoctorBookingProcessSecondScreen
 import com.hanif.medical.Screens.doctor.DoctorBookingProcessThirdScreen
 import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
+import com.hanif.medical.Screens.shopping.shppingaddress.ShoppingAddressViewModel
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.viewmodel.HomeViewModel
 import com.matrixhive.subsalert.component.notification.NotificationScreen
@@ -104,7 +105,8 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             ShoppingAddressScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController
+                navController = navController, sharedViewModel = shoppingSharedViewModel,
+                onPopBackStack = { navController.popBackStack() }
             )
         }
         composable(
@@ -112,7 +114,7 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             ShoppingPrePaymentScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController
+                navController = navController, sharedViewModel = shoppingSharedViewModel
             )
         }
 
@@ -149,7 +151,8 @@ fun HomeNavGraph(navController: NavHostController) {
             route = Routes.DOCTOR_BOOKING_PROCESS_SECOND_SCREEN,
         ) {
             DoctorBookingProcessSecondScreen(
-                onNavigate = { event -> navController.navigate(event.route) }, sharedViewModel = doctorSharedViewModel,
+                onNavigate = { event -> navController.navigate(event.route) },
+                sharedViewModel = doctorSharedViewModel,
                 navController = navController
             )
         }
@@ -158,7 +161,13 @@ fun HomeNavGraph(navController: NavHostController) {
             route = Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN,
         ) {
             DoctorBookingProcessThirdScreen(
-                onNavigate = { event -> navController.navigate(event.route) },sharedViewModel = doctorSharedViewModel,
+                onNavigate = { event ->
+                    navController.navigate(event.route) {
+                        popUpTo(Routes.DOCTOR_BOOKING_PROCESS_THIRD_SCREEN) {
+                            inclusive = true
+                        }
+                    }
+                }, sharedViewModel = doctorSharedViewModel,
                 navController = navController
             )
         }

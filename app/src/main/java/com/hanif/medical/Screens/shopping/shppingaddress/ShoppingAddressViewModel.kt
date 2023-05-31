@@ -237,6 +237,9 @@ class ShoppingAddressViewModel @Inject constructor() : BaseViewModal() {
                 }
                 sendUiEvent(UIEvent.Navigate(Routes.SHOPPING_PRE_PAYMENT_SCREEN))
             }
+            ShoppingAddressEvent.OnPopBackstack -> {
+            sendUiEvent(UIEvent.PopBackStack)
+            }
             else -> Unit
         }
     }

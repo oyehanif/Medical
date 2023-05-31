@@ -54,7 +54,7 @@ fun DetailShoppingScreen(
 
     val medicineModel = sharedViewModel.medicalModel
 
-    var qty by rememberSaveable { mutableStateOf(0) }
+    var qty by rememberSaveable { mutableStateOf(1) }
 
     medicineModel?.let {
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
@@ -116,7 +116,7 @@ fun DetailShoppingScreen(
                     Image(
                         painterResource(id = R.drawable.baseline_horizontal_rule_24),
                         contentDescription = "Star", Modifier.clickable {
-                            qty--
+                            qty += 1
                         }
                     )
 
@@ -125,7 +125,7 @@ fun DetailShoppingScreen(
                     Image(
                         painterResource(id = R.drawable.baseline_add_24),
                         contentDescription = "Star", Modifier.clickable {
-                            qty++
+                            qty += 1
                         }
                     )
                 }

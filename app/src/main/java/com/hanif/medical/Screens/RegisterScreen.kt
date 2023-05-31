@@ -39,6 +39,7 @@ import com.hanif.medical.R
 import com.hanif.medical.models.Resource
 import com.hanif.medical.navigation.Screen
 import com.hanif.medical.utils.CustomSpacer
+import com.hanif.medical.utils.graphs.Graph
 import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.AuthViewModel
 import java.util.Locale
@@ -123,7 +124,7 @@ fun RegisterScreen(
                 is Resource.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 is Resource.Success -> {
                     Log.e("TAG", "RegisterScreen: successfully")
-                    onPopBackStack()
+                    onNavigate(UIEvent.Navigate(Graph.HOME))
                 }
             }
         }

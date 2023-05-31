@@ -1,5 +1,6 @@
 package com.hanif.medical.Screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,18 +34,34 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
 import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.Screens.shopping.ShoppingProcessModel
+import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.ShoppingViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+val getRandom = getRandomString()
 
 @Composable
 fun ShoppingPrePaymentScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
-    navController: NavController, modifier: Modifier = Modifier
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: ShoppingViewModel = hiltViewModel(),
+    sharedViewModel: ShoppingSharedViewModel
 ) {
+
+    val model = sharedViewModel.shoppingProcessModel
+    val shoppingItem = sharedViewModel.medicalModel
     Scaffold(topBar = {
         CommonAppBar(
             navigationIconAction = {},
@@ -65,7 +82,7 @@ fun ShoppingPrePaymentScreen(
             )
 
             var selected by rememberSaveable { mutableStateOf("COD") }
-            DisplayCheckGroup(selected){
+            DisplayCheckGroup(selected) {
                 selected = it
             }
 
@@ -79,9 +96,9 @@ fun ShoppingPrePaymentScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(10.dp)
                 ) {
-                    Column(Modifier.fillMaxWidth(.8f)) {
+                    Column(Modifier.fillMaxWidth()) {
                         Text(
-                            text = "Hanif Shaikh",
+                            text = model!!.fullName,
                             Modifier.padding(vertical = 10.dp),
                             fontWeight = FontWeight.Normal,
                             fontFamily = DMSans,
@@ -90,7 +107,7 @@ fun ShoppingPrePaymentScreen(
                             fontSize = 12.sp
                         )
                         Text(
-                            text = "+91 8153815190",
+                            text = "+91 ${model.mobileNumber}",
                             Modifier.padding(vertical = 10.dp),
                             fontWeight = FontWeight.Normal,
                             fontFamily = DMSans,
@@ -109,16 +126,16 @@ fun ShoppingPrePaymentScreen(
                         )
                     }
 
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(Icons.Default.Edit, contentDescription = "", Modifier.size(12.dp))
-                        Text(
-                            text = "EDit",
-                            Modifier.padding(end = 4.dp),
-                            fontWeight = FontWeight.Normal,
-                            fontFamily = DMSans,
-                            fontSize = 12.sp
-                        )
-                    }
+                    /* Row(verticalAlignment = Alignment.CenterVertically) {
+                         Image(Icons.Default.Edit, contentDescription = "", Modifier.size(12.dp))
+                         Text(
+                             text = "EDit",
+                             Modifier.padding(end = 4.dp),
+                             fontWeight = FontWeight.Normal,
+                             fontFamily = DMSans,
+                             fontSize = 12.sp
+                         )
+                     }*/
                 }
             }
 
@@ -140,14 +157,17 @@ fun ShoppingPrePaymentScreen(
 
                     Row {
                         Image(
-                            painter = painterResource(id = R.drawable.img_6),
-                            modifier = Modifier.size(100.dp).padding(10.dp).clip(RoundedCornerShape(10)),
+                            painter = rememberAsyncImagePainter(model = model?.medicineModel!!.image),
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(10.dp)
+                                .clip(RoundedCornerShape(10)),
                             contentScale = ContentScale.Crop,
                             contentDescription = "Medicine"
                         )
                         Column() {
                             Text(
-                                text = "Benylin Dry and Ticky cough syrup 100 ML",
+                                text = model.medicineModel.name,
                                 Modifier.padding(10.dp),
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = DMSans,
@@ -156,7 +176,7 @@ fun ShoppingPrePaymentScreen(
                                 fontSize = 16.sp
                             )
                             Text(
-                                text = "Rs. 1000",
+                                text = "Rs. " + model.medicineModel.price.toString(),
                                 Modifier.padding(10.dp),
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = DMSans,
@@ -198,8 +218,9 @@ fun ShoppingPrePaymentScreen(
                             maxLines = 3,
                             fontSize = 16.sp
                         )
+                        Log.e("TAG", "ShoppingPrePaymentScreen: ${model!!.qty}")
                         Text(
-                            text = "Rs. 1000",
+                            text = ((model.medicineModel!!.price.toInt()) * model.qty).toString(),
                             Modifier.padding(10.dp),
                             fontWeight = FontWeight.Bold,
                             fontFamily = DMSans,
@@ -222,8 +243,9 @@ fun ShoppingPrePaymentScreen(
                             maxLines = 3,
                             fontSize = 16.sp
                         )
+
                         Text(
-                            text = "ERT123DC",
+                            text = getRandom,
                             Modifier.padding(10.dp),
                             fontWeight = FontWeight.Bold,
                             fontFamily = DMSans,
@@ -276,7 +298,7 @@ fun ShoppingPrePaymentScreen(
                     fontSize = 16.sp
                 )
                 Text(
-                    text = "Rs.1200",
+                    text = ((model?.medicineModel!!.price.toInt() * model.qty) + 200).toString(),
                     Modifier.padding(10.dp),
                     fontWeight = FontWeight.Bold,
                     fontFamily = DMSans,
@@ -286,22 +308,39 @@ fun ShoppingPrePaymentScreen(
                 )
             }
 
-            CommonButton("Place Order", modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
-                if (selected == "COD"){
-                    onNavigate(UIEvent.Navigate(Routes.SHOPPING_SUCCESSFUL_SCREEN))
-                }else{
-                    onNavigate(UIEvent.Navigate(Routes.SHOPPING_CARD_PAYMENT_SCREEN))
-                }
-            })
+            CommonButton(
+                "Place Order", modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
+                    sharedViewModel.addShoppingProcessModelValue(
+                        model!!.copy(
+                            paymentOption = selected,
+                            orderDate = System.currentTimeMillis(),
+                            orderID = getRandom
+                        )
+                    )
+                    if (selected == "COD") {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.insertShoppingOrder(sharedViewModel.shoppingProcessModel!!)
+                        }
+                        onNavigate(UIEvent.Navigate(Routes.SHOPPING_SUCCESSFUL_SCREEN))
+                    } else {
+                        onNavigate(UIEvent.Navigate(Routes.SHOPPING_CARD_PAYMENT_SCREEN))
+                    }
+                })
         }
     }
 }
 
+fun getRandomString(): String {
+    val allowedChars = ('A'..'Z') + ('0'..'9')
+    return (1..8)
+        .map { allowedChars.random() }
+        .joinToString("")
+}
 
 @Composable
-fun DisplayCheckGroup(selected :String,onValueChange:(String)  -> Unit) {
+fun DisplayCheckGroup(selected: String, onValueChange: (String) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
             modifier = Modifier.padding(0.dp),

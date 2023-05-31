@@ -89,9 +89,9 @@ fun HomeScreen(
     // val todos = viewModel.fetchList.collectAsStateWithLifecycle()
 
 
-    LaunchedEffect(key1 = viewModel.getSettingData() ) {
+    /*LaunchedEffect(key1 = viewModel.getSettingData() ) {
 
-    }
+    }*/
 
     val scaffoldState = rememberScaffoldState()
     val state = viewModel.state

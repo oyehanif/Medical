@@ -29,6 +29,7 @@ class ShoppingSharedViewModel @Inject constructor() : BaseViewModal() {
 
 
 data class ShoppingProcessModel(
+    val medicineModel: MedicineModel? = null,
     val qty : Int = 0,
     val fullName:String = "",
     val mobileNumber:String = "",
@@ -40,4 +41,6 @@ data class ShoppingProcessModel(
     val state:String = "",
     val country:String = "",
     val paymentOption:String = "",
+    val orderID :String = "",
+    val orderDate :Long = 0L
 )
