@@ -67,7 +67,9 @@ import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.ui.theme.SimplePurple
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.Routes.ALL_DOCTOR_SCREEN
+import com.hanif.medical.utils.Routes.DOCTOR_LOGIN
 import com.hanif.medical.utils.Routes.REPORT_SCREEN
+import com.hanif.medical.utils.Routes.SHOPPING_ORDER_LIST_SCREEN
 import com.hanif.medical.utils.Routes.SHOPPING_SCREEN
 import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.DoctorListingsState
@@ -80,7 +82,7 @@ fun HomeScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel ,
+    viewModel: HomeViewModel,
     sharedViewModel: DoctorSharedViewModel
 ) {
 
@@ -97,8 +99,7 @@ fun HomeScreen(
     val state = viewModel.state
 
     Scaffold(modifier = modifier.fillMaxSize()) {
-    val paddingValues = it
-
+        val paddingValues = it
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -124,6 +125,11 @@ fun HomeScreen(
                 Image(
                     Icons.Default.Person, contentDescription = "",
                     Modifier
+                        .clickable {
+                            UIEvent.Navigate(
+                                DOCTOR_LOGIN
+                            )
+                        }
                         .border(
                             1.dp,
                             Color.Gray, shape = RoundedCornerShape(20)
@@ -193,7 +199,7 @@ fun HomeScreen(
                 BaseServiceComp(R.drawable.baseline_shopping_cart_24) {
                     onNavigate(
                         UIEvent.Navigate(
-                            SHOPPING_SCREEN
+                            SHOPPING_ORDER_LIST_SCREEN
                         )
                     )
                 }
@@ -216,9 +222,9 @@ fun HomeScreen(
             DoctorListView(state, sharedViewModel, onNavigate)
         }
 
-      /*  if (state.isLoading){
-            CommonProgress()
-        }*/
+        /*  if (state.isLoading){
+              CommonProgress()
+          }*/
     }
 }
 
@@ -273,7 +279,7 @@ fun DoctorListView(
             }
         }*/
 
-        items(state.companies){
+        items(state.companies) {
             DoctorItem(it) {
                 sharedViewModel.addDoctorModel(it)
                 onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))

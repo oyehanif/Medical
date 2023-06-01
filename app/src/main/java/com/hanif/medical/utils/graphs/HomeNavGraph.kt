@@ -14,6 +14,7 @@ import com.hanif.medical.Screens.HomeScreen
 import com.hanif.medical.Screens.OrderSuccessfulScreen
 import com.hanif.medical.Screens.ReportScreen
 import com.hanif.medical.Screens.ShoppingAddressScreen
+import com.hanif.medical.Screens.ShoppingOrdersScreen
 import com.hanif.medical.Screens.ShoppingPrePaymentScreen
 import com.hanif.medical.Screens.ShoppingScreen
 import com.hanif.medical.Screens.card.AddPaymentCard
@@ -23,6 +24,8 @@ import com.hanif.medical.Screens.doctor.DoctorBookingProcessFirstScreens
 import com.hanif.medical.Screens.doctor.DoctorBookingProcessSecondScreen
 import com.hanif.medical.Screens.doctor.DoctorBookingProcessThirdScreen
 import com.hanif.medical.Screens.doctor.DoctorSharedViewModel
+import com.hanif.medical.Screens.doctorModule.DoctorHomeScreen
+import com.hanif.medical.Screens.doctorModule.auth.DoctorLoginScreen
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
 import com.hanif.medical.Screens.shopping.shppingaddress.ShoppingAddressViewModel
 import com.hanif.medical.utils.Routes
@@ -82,6 +85,15 @@ fun HomeNavGraph(navController: NavHostController) {
                 navController = navController,
                 sharedViewModel = shoppingSharedViewModel
             )
+        }
+        composable(
+            route = Routes.SHOPPING_ORDER_LIST_SCREEN,
+        ) {
+            ShoppingOrdersScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController
+            )
+
         }
         composable(
             route = Routes.SHOPPING_SUCCESSFUL_SCREEN,
@@ -230,5 +242,16 @@ fun HomeNavGraph(navController: NavHostController) {
             EditProfileScreen()
         }*/
 
+        composable(route =Routes.DOCTOR_LOGIN ) {
+            DoctorLoginScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() }
+            )
+        }
+
+        composable(route =Routes.DOCTOR_HOME_SCREEN ) {
+            DoctorHomeScreen()
+        }
     }
 }

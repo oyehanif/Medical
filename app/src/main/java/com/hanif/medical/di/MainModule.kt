@@ -3,7 +3,6 @@ package com.hanif.medical.di
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import com.hanif.medical.datastore.DataStore
 import com.hanif.medical.repository.AuthRepository
 import dagger.Module

@@ -15,12 +15,16 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +36,8 @@ import com.hanif.medical.Screens.shopping.ShoppingProcessModel
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.utils.graphs.UIEvent
 import com.hanif.medical.viewmodel.ShoppingViewModel
+import com.matrixhive.subsalert.component.notification.EmptyScreen
+import java.time.LocalDateTime
 import java.util.Date
 
 @Composable
@@ -74,15 +80,14 @@ fun ShoppingOrdersScreen(
 
         val state = viewModel.state
 
-        LazyColumn(){
-            items(state.companies){
-                 /*{
-                    onNavigate(UIEvent.Navigate(Routes.DETAIL_DOCTOR_SCREEN))
-                }*/
+        if (state.companies.isNotEmpty()) {
+            LazyColumn() {
+                items(state.companies) {
+                    OrderItem(it)
+                }
             }
-            items(state.companies){
-                OrderItem(it)
-            }
+        } else {
+            EmptyScreen("NO Order Found", "PLease OrderFirst to see your Orders")
         }
     }
 }
@@ -98,8 +103,11 @@ fun OrderItem(i: ShoppingProcessModel) {
         Column() {
             Text(
                 text = "Medically Pharmacy",
-                Modifier.padding(10.dp),
+                Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.End,
                 fontFamily = DMSans,
                 fontStyle = FontStyle.Normal,
                 maxLines = 3,
@@ -118,7 +126,7 @@ fun OrderItem(i: ShoppingProcessModel) {
                 )
                 Column() {
                     Text(
-                        text = i.fullName,
+                        text = i.medicineModel.name,
                         Modifier.padding(10.dp),
                         fontWeight = FontWeight.Bold,
                         fontFamily = DMSans,
@@ -137,7 +145,7 @@ fun OrderItem(i: ShoppingProcessModel) {
                     )
 
                     Text(
-                        text = "Buying Date :- ",//${Date(i)}.",
+                        text = "Buying Date :- ${Date(i.orderDate)}.",
                         Modifier.padding(10.dp),
                         fontWeight = FontWeight.Bold,
                         fontFamily = DMSans,
@@ -150,5 +158,3 @@ fun OrderItem(i: ShoppingProcessModel) {
         }
     }
 }
-
-

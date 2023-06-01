@@ -6,6 +6,7 @@
     <string name="exipry_date">Expiry date</string>
     <string name="cvc">CVC</string>
     <string name="save">save</string>
+    <string name="login_txt"><![CDATA[Please Enter Your Email & Password to Login.]]></string>
 
     <string-array name="gender">
         <item>Male</item>
