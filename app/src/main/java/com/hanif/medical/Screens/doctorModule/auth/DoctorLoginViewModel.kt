@@ -70,11 +70,11 @@ class DoctorLoginViewModel @Inject constructor(
         when (event) {
             is DoctorAuthEvent.OnEmailChange -> {
                 userEmail = event.email.trim()
-                val result = ValidateEmail().execute(userEmail)
+                /*val result = ValidateEmail().execute(userEmail)
                 emailNameValid = !result.successful
                 if (!result.successful) {
                     emailErrMsg = result.errorMessage!!
-                }
+                }*/
             }
 
             is DoctorAuthEvent.OnPasswordChange -> {
@@ -94,17 +94,17 @@ class DoctorLoginViewModel @Inject constructor(
             is DoctorAuthEvent.OnSubmitClick -> {
                 viewModelScope.launch {
 
-                    val vEmail = ValidateEmail().execute(userEmail)
+                    //val vEmail = ValidateEmail().execute(userEmail)
                     val vPassword = ValidatePassword().execute(userPassword, false)
                     val hasError = listOf(
-                        vEmail, vPassword
+                        /*vEmail,*/ vPassword
                     ).any { !it.successful }
 
                     if (hasError) {
                         passwordValid = !vPassword.successful
-                        emailErrMsg = vEmail.errorMessage ?: ""
                         passwordErrMsg = vPassword.errorMessage ?: ""
-                        emailNameValid = !vEmail.successful
+//                        emailErrMsg = vEmail.errorMessage ?: ""
+//                        emailNameValid = !vEmail.successful
                         return@launch
                     }
                     getLoginResponse(
@@ -122,10 +122,10 @@ class DoctorLoginViewModel @Inject constructor(
     }
 
 
-    private fun getLoginResponse(email: String, password: String) {
+    private fun getLoginResponse(phone: String, password: String) {
         viewModelScope.launch {
             repository
-                .doctorLogin(email, password)
+                .doctorLogin(phone, password)
                 .collect { result ->
                     when (result) {
                         is Resource.Success -> {
@@ -147,6 +147,26 @@ class DoctorLoginViewModel @Inject constructor(
         }
     }
 
+
+    fun getDoctorAppointmentDataList() {
+        viewModelScope.launch {
+            repository.getDoctorAppointment().collect{result ->
+                when(result){
+                    is Resource.Error -> Log.e("TAG", "getSettingData: ${result.error}", )
+                    is Resource.Loading -> Log.e("TAG", "getSettingData: Loading", )
+                    is Resource.Success -> {
+                        result.data?.let { listings ->
+                            Log.e("TAG", "getSettingData: ${listings.size}", )
+                            Log.e("TAG", "getSettingData: ${listings}", )
+                            /*appointmentState = appointmentState.copy(
+                                companies = listings
+                            )*/
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 data class DoctorLoginState(

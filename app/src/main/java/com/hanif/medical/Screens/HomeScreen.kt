@@ -126,8 +126,10 @@ fun HomeScreen(
                     Icons.Default.Person, contentDescription = "",
                     Modifier
                         .clickable {
-                            UIEvent.Navigate(
-                                DOCTOR_LOGIN
+                            onNavigate(
+                                UIEvent.Navigate(
+                                    DOCTOR_LOGIN
+                                )
                             )
                         }
                         .border(

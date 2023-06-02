@@ -1,6 +1,9 @@
 package com.hanif.medical.Screens
 
-import android.widget.Toast
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,12 +40,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
@@ -51,6 +55,7 @@ import com.hanif.medical.Screens.doctor.BookingProcess
 import com.hanif.medical.application.MedicalAppClass
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.viewmodel.HomeViewModel
+
 
 @Preview
 @Composable
@@ -122,6 +127,7 @@ fun CustomTabs() {
 
 @Composable
 fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {}) {
+    val context =  LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -172,13 +178,7 @@ fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {})
                         CircleShape
                     )
                     .clickable {
-                        Toast
-                            .makeText(
-                                MedicalAppClass.getAppContext(),
-                                "Call Clicked",
-                                Toast.LENGTH_LONG
-                            )
-                            .show()
+                        callerFunction(context,itemModel.model.phone.toString())
                     },
                 contentDescription = "",
             )
@@ -225,4 +225,11 @@ fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {})
 
 
     }
+}
+
+fun callerFunction(context : Context, phone:String){
+    val i = Intent(Intent.ACTION_DIAL)
+    val p = "tel:$phone"
+    i.data = Uri.parse(p)
+    context.startActivity(i)
 }
