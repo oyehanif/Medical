@@ -41,6 +41,7 @@ import com.hanif.medical.R
 import com.hanif.medical.Screens.commo.CommonAppBar
 import com.hanif.medical.Screens.shopping.ShoppingProcessModel
 import com.hanif.medical.Screens.shopping.ShoppingSharedViewModel
+import com.hanif.medical.Screens.shopping.shppingaddress.ShoppingAddressEvent
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
@@ -57,14 +58,15 @@ fun ShoppingPrePaymentScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: ShoppingViewModel = hiltViewModel(),
-    sharedViewModel: ShoppingSharedViewModel
+    sharedViewModel: ShoppingSharedViewModel,
+    onPopBackStack: () -> Unit
 ) {
 
     val model = sharedViewModel.shoppingProcessModel
     val shoppingItem = sharedViewModel.medicalModel
     Scaffold(topBar = {
         CommonAppBar(
-            navigationIconAction = {},
+            navigationIconAction = {  navController.popBackStack()},
             title = "Order Conformation"
         )
     }) { paddingValues ->

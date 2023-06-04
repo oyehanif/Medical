@@ -68,7 +68,7 @@ fun CustomDropDown(
             trailingIcon = {
                 Icon(icon, "contentDescription")
             },
-            colors = TextFieldDefaults.textFieldColors(
+            /*colors = TextFieldDefaults.textFieldColors(
                 cursorColor = Color.Gray,
                 disabledLabelColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
@@ -76,7 +76,7 @@ fun CustomDropDown(
                 textColor = Color.Black,//LocalCustomColorsPalette.current.textColor,
                 disabledTextColor = Color.Black,//LocalCustomColorsPalette.current.textColor,
                 disabledIndicatorColor = Color.Transparent,
-            ),
+            )*/
             shape = RoundedCornerShape(40)
         )
 

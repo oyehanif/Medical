@@ -1,6 +1,7 @@
 package com.hanif.medical.Screens
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -91,9 +92,9 @@ fun HomeScreen(
     // val todos = viewModel.fetchList.collectAsStateWithLifecycle()
 
 
-    /*LaunchedEffect(key1 = viewModel.getSettingData() ) {
-
-    }*/
+    LaunchedEffect(key1 = true) {
+        viewModel.getSettingData()
+    }
 
     val scaffoldState = rememberScaffoldState()
     val state = viewModel.state
@@ -116,7 +117,7 @@ fun HomeScreen(
                 Column(modifier = modifier) {
                     Text(text = "\uD83D\uDC4B Hello!")
                     Text(
-                        text = "Hanif Shaikh",
+                        text = "Welcome Back!",
                         fontFamily = DMSans,
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.h4
@@ -140,27 +141,7 @@ fun HomeScreen(
                 )
             }
             AutoSlideWindo()
-            /*//Search Filed
-            val (value, onValueChange) = remember { mutableStateOf("") }
 
-            Spacer(modifier = Modifier.height(10.dp))
-            TextField(
-                value = value,
-                onValueChange = onValueChange,
-                textStyle = TextStyle(fontSize = 17.sp),
-                leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(SimplePurple)
-                    .clip(RoundedCornerShape(16.dp)),
-                placeholder = { Text(text = "") },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.DarkGray
-                )
-            )
-    */
             /*Services*/
             Text(
                 text = "Our Services",
@@ -234,10 +215,10 @@ fun HomeScreen(
 private fun AutoSlideWindo() {
     //auto Slide banner
     val images = listOf(
-        R.drawable.img_5,
-        R.drawable.img_2,
-        R.drawable.img_3,
-        R.drawable.img_4,
+        R.drawable.banner1,
+        R.drawable.banner2,
+        R.drawable.banner3,
+        R.drawable.banner4,
     )
 
     Card(
@@ -252,7 +233,7 @@ private fun AutoSlideWindo() {
                         .data(images[index])
                         .build(),
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Inside,
                     modifier = Modifier.height(200.dp)
                 )
                 Image(
@@ -332,16 +313,17 @@ fun IndicatorDot(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AutoSlidingCarousel(
     modifier: Modifier = Modifier,
     autoSlideDuration: Long = 5000L,
-    pagerState: PagerState = remember { PagerState() },
     itemsCount: Int,
     itemContent: @Composable (index: Int) -> Unit,
 ) {
-    val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
+    val pagerState = remember { androidx.compose.foundation.pager.PagerState(0) }
 
+    val isDragged by pagerState.interactionSource.collectIsDraggedAsState()
     LaunchedEffect(pagerState.currentPage) {
         delay(autoSlideDuration)
         pagerState.animateScrollToPage((pagerState.currentPage + 1) % itemsCount)
@@ -350,7 +332,10 @@ fun AutoSlidingCarousel(
     Box(
         modifier = modifier.fillMaxWidth(),
     ) {
-        HorizontalPager(count = itemsCount, state = pagerState) { page ->
+        androidx.compose.foundation.pager.HorizontalPager(
+            pageCount = itemsCount,
+            state = pagerState
+        ) { page ->
             itemContent(page)
         }
 
@@ -387,119 +372,4 @@ fun BaseServiceComp(@DrawableRes image: Int, onClick: () -> Unit) { //
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun UpcomingSeactionItem() {
-    Card(Modifier.padding(20.dp)) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-        ) {
-            Column(
-                Modifier
-                    .weight(.2f)
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(40)),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "12",
-                    maxLines = 1,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "TUE",
-                    fontSize = 16.sp,
-                )
-            }
-            Column(
-                Modifier
-                    .weight(.7f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start
-            ) {
-
-                Text(
-                    text = "9:30 AM",
-                    maxLines = 1,
-                    fontWeight = FontWeight.Bold,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(
-                    text = "Nikola",
-                    maxLines = 1, fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(text = "Deprecation")
-            }
-        }
-    }
-}
-
-//@Preview(showBackground = true)
-@Composable
-fun Item_Doctor() {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(R.drawable.doctor),
-            contentDescription = "avatar",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .padding(10.dp)                     // clip to the circle shape
-                .border(1.dp, Color.Gray, RoundedCornerShape(20))
-                .weight(.3f)   // add a border (optional)
-        )
-
-        Column(
-            Modifier
-                .padding(vertical = 10.dp)
-                .weight(.6f)
-                .fillMaxHeight()
-        ) {
-            Text(
-                text = "Dr. Hanif Shaikh",
-                maxLines = 1,
-                fontWeight = FontWeight.Bold,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Text(text = "Cardiologist")
-        }
-        Column(Modifier.weight(.2f)) {
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CommonChip(subsCategories: SubsCategories, onSelectChanged: (SubsCategories) -> Unit) {
-    AssistChip(modifier = Modifier.padding(end = 8.dp),
-        onClick = { onSelectChanged(subsCategories.copy(isSelected = !subsCategories.isSelected)) },
-        label = { Text(subsCategories.categories) },
-        leadingIcon = {
-            Image(
-                painter = painterResource(id = subsCategories.image),
-                contentDescription = subsCategories.categories,
-                Modifier.size(AssistChipDefaults.IconSize)
-            )
-        }
-    )
-
-}
 

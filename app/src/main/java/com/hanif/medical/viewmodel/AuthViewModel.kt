@@ -1,5 +1,6 @@
 package com.hanif.medical.viewmodel
 
+import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,7 +17,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(private val authRepository: AuthRepository,private val dataStore: DataStore) :
+class AuthViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
+    private val dataStore: DataStore
+) :
     BaseViewModal() {
 
     private val _registerFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
@@ -25,13 +29,15 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _loginFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
     val loginFlow: StateFlow<Resource<FirebaseUser>?> = _loginFlow
 
+    private val _forgetFlow = MutableStateFlow<Resource<Boolean>?>(null)
+    val forgetFlow: StateFlow<Resource<Boolean>?> = _forgetFlow
     var userEmail by mutableStateOf("")
         private set
     var userPassword by mutableStateOf("")
         private set
 
     init {
-        if (authRepository.currentUser() != null){
+        if (authRepository.currentUser() != null) {
             _loginFlow.value = Resource.Success(authRepository.currentUser()!!)
         }
     }
@@ -52,7 +58,7 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
         password: String,
         isRemember: Boolean
     ) = viewModelScope.launch {
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             _loginFlow.value = Resource.Error("Email is Empty")
             return@launch
         }
@@ -65,12 +71,25 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
         _loginFlow.value = result
     }
 
-    fun logout(){
+    fun logout() {
         authRepository.logout()
-        _registerFlow .value = null
+        _registerFlow.value = null
         _loginFlow.value = null
     }
 
-    val currentUser :FirebaseUser?
+    fun forgetPassword(email: String) = viewModelScope.launch {
+        if (email.isEmpty()) {
+            _forgetFlow.value = Resource.Error("Email is Empty")
+            return@launch
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _forgetFlow.value = Resource.Error("please valid email")
+            return@launch
+        }
+       val result =  authRepository.forgetPassword(email)
+
+        _forgetFlow.value  =result
+    }
+
+    val currentUser: FirebaseUser?
         get() = authRepository.currentUser()
 }

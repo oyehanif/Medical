@@ -126,7 +126,8 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             ShoppingPrePaymentScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController, sharedViewModel = shoppingSharedViewModel
+                navController = navController, sharedViewModel = shoppingSharedViewModel,
+                onPopBackStack = { navController.popBackStack() }
             )
         }
 
@@ -135,7 +136,7 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             DetailShoppingScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController, sharedViewModel = shoppingSharedViewModel
+                navController = navController, sharedViewModel = shoppingSharedViewModel,
             )
         }
 
@@ -146,7 +147,7 @@ fun HomeNavGraph(navController: NavHostController) {
                 onNavigate = { event -> navController.navigate(event.route) },
                 navController = navController,
                 viewModel = viewModel,
-                sharedViewModel = doctorSharedViewModel
+                sharedViewModel = doctorSharedViewModel,
             )
         }
         composable(
@@ -155,7 +156,8 @@ fun HomeNavGraph(navController: NavHostController) {
             DoctorBookingProcessFirstScreens(
                 onNavigate = { event -> navController.navigate(event.route) },
                 sharedViewModel = doctorSharedViewModel,
-                navController = navController
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() }
             )
         }
 
@@ -165,7 +167,8 @@ fun HomeNavGraph(navController: NavHostController) {
             DoctorBookingProcessSecondScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
                 sharedViewModel = doctorSharedViewModel,
-                navController = navController
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() }
             )
         }
 
@@ -180,7 +183,8 @@ fun HomeNavGraph(navController: NavHostController) {
                         }
                     }
                 }, sharedViewModel = doctorSharedViewModel,
-                navController = navController
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() }
             )
         }
         composable(
@@ -196,7 +200,7 @@ fun HomeNavGraph(navController: NavHostController) {
         ) {
             ConformDoctorAppointment(
                 onNavigate = { event -> navController.navigate(event.route) },
-                navController = navController
+                navController = navController,
             )
         }
 

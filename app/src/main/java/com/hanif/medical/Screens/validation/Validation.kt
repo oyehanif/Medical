@@ -9,6 +9,8 @@ class Validations {
             ValidationResult(false, "please enter $errorName")
         } else if (value.length > 3) {
             ValidationResult(false, "please Valid $errorName")
+        } else if (!value.all { char -> char.isDigit() }) {
+            ValidationResult(false, "please Enter only number")
         } else {
             ValidationResult(true)
         }

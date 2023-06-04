@@ -128,30 +128,7 @@ fun SettingScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(18.dp))
-                //Edit Profile
-                CommonCardViewForSettingScreen(
-                    text ="Edit Profile",
-                    lightIcon = R.drawable.setting_user_ligth,
-                    darkIcon = R.drawable.setting_user_dark,
-                    onClick = { onNavigate(UIEvent.Navigate(route = Routes.EDIT_PROFILE_SCREEN)) })
 
-                //Currency
-                CommonCardViewForSettingScreen(
-                    lightIcon = R.drawable.setting_currency_ligth,
-                    text = "Currency",
-                    darkIcon = R.drawable.setting_currency_dark, onClick = {})
-
-                //Notification
-                CommonCardViewForSettingScreen(
-                    lightIcon = R.drawable.setting_notification_ligth,
-                    text = "sNotification",
-                    darkIcon = R.drawable.setting_notification_dark, onClick = {})
-
-                //Theme
-                CommonCardViewForSettingScreen(
-                    lightIcon = R.drawable.setting_theme_ligth,
-                    text = "Theme",
-                    darkIcon = R.drawable.setting_theme_dark, onClick = {})
 
                 //Delete My Account
                 CommonCardViewForSettingScreen(

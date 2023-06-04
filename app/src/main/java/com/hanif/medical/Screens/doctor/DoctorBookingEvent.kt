@@ -10,6 +10,7 @@ sealed class DoctorBookingEvent {
     data class OnHeightChange(val height: String) : DoctorBookingEvent()
 
     data class OnAgeChange(val age: String) : DoctorBookingEvent()
+    data class OnPatientPhoneNumberChange(val phoneNumberChange: String) : DoctorBookingEvent()
 
     object OnSubmitClick : DoctorBookingEvent()
 

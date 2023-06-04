@@ -1,5 +1,6 @@
 package com.hanif.medical.repository
 
+import android.icu.text.CaseMap.Title
 import android.util.Log
 import android.widget.Toast
 import com.google.firebase.FirebaseException
@@ -13,9 +14,15 @@ import com.hanif.medical.application.MedicalAppClass
 import com.hanif.medical.models.Resource
 import com.hanif.medical.utils.Appointment
 import com.hanif.medical.utils.DOCTOR
+import com.hanif.medical.utils.Notification
+import com.hanif.medical.utils.REPORTS
 import com.hanif.medical.utils.USERS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 data class DoctorModel(
@@ -33,12 +40,25 @@ data class DoctorModel(
     val id: Long = 0L
 )
 
+val c: Date = Calendar.getInstance().getTime()
+val df = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
+
 data class MedicineModel(
     val image: String = "",
     val name: String = "",
     val desc: String = "",
     val price: Long = 0L
 )
+
+data class ReportModel(
+    val message :String = "",
+    val Time : String = df.format(c)
+)
+data class NotificationModel(
+    val title: String = "",
+    val desc: String = "",
+    val image: String = "",
+    )
 
 class HomeRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
@@ -48,6 +68,8 @@ class HomeRepository @Inject constructor(
     val packagesList: MutableList<DoctorModel> = mutableListOf()
     val userAppointmentLIst: MutableList<BookingProcess> = mutableListOf()
     val medicineList: MutableList<MedicineModel> = mutableListOf()
+    val reportList: MutableList<ReportModel> = mutableListOf()
+    val notificationList: MutableList<NotificationModel> = mutableListOf()
     /*fun getDoctorList() {
 
         val result =
@@ -157,17 +179,29 @@ class HomeRepository @Inject constructor(
         return fetchDataFromFirebase
     }
 
-    suspend fun insertAppointment(bookingProcess: BookingProcess) {
+    suspend fun insertAppointment(bookingProcess: BookingProcess, isUpdate: Boolean = false) {
         val uid = firebaseAuth.uid
         try {
-            firebaseDatabase.getReference(Appointment).child(USERS).child(uid!!).push().setValue(bookingProcess)
-                .await()
-            firebaseDatabase.getReference(Appointment).child(DOCTOR).child(bookingProcess.model!!.id.toString()).push().setValue(bookingProcess)
-                .await()
+            if (isUpdate) {
+                firebaseDatabase.getReference(Appointment).child(USERS).child(uid!!)
+                    .child(bookingProcess.entryId).setValue(bookingProcess)
+                    .await()
+                firebaseDatabase.getReference(Appointment).child(DOCTOR)
+                    .child(bookingProcess.model!!.id.toString()).child(bookingProcess.entryId)
+                    .setValue(bookingProcess)
+                    .await()
+            } else {
+                firebaseDatabase.getReference(Appointment).child(USERS).child(uid!!).push()
+                    .setValue(bookingProcess)
+                    .await()
+                firebaseDatabase.getReference(Appointment).child(DOCTOR)
+                    .child(bookingProcess.model!!.id.toString()).push().setValue(bookingProcess)
+                    .await()
+            }
 //            Toast.makeText(MedicalAppClass.getAppContext(), "Appointment Add Successfully", Toast.LENGTH_LONG).show()
 
         } catch (e: FirebaseException) {
-            Log.e("TAG", "insertAppointment: ${e.message.toString()}", )
+            Log.e("TAG", "insertAppointment: ${e.message.toString()}")
         }
     }
 
@@ -176,13 +210,14 @@ class HomeRepository @Inject constructor(
             MutableStateFlow<Resource<List<BookingProcess>>>(Resource.Loading())
         val uid = firebaseAuth.uid
         try {
-            firebaseDatabase.getReference(Appointment).child(USERS).child(uid!!).
-                addValueEventListener(object : ValueEventListener {
+            firebaseDatabase.getReference(Appointment).child(USERS).child(uid!!)
+                .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         userAppointmentLIst.clear()
                         if (snapshot.exists()) {
                             for (dataSnapshot in snapshot.children) {
                                 val model = dataSnapshot.getValue(BookingProcess::class.java)!!
+                                model.entryId = dataSnapshot.key!!
                                 userAppointmentLIst.add(model)
                             }
                             fetchAppointmentOfUser.value = Resource.Success(userAppointmentLIst)
@@ -201,5 +236,67 @@ class HomeRepository @Inject constructor(
 
         return fetchAppointmentOfUser
     }
+
+    fun getUserReports(): MutableStateFlow<Resource<List<ReportModel>>> {
+        val fetchReportsOFUser =
+            MutableStateFlow<Resource<List<ReportModel>>>(Resource.Loading())
+        val uid = firebaseAuth.uid
+        try {
+            firebaseDatabase.getReference(REPORTS).child(uid!!)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        reportList.clear()
+                        if (snapshot.exists()) {
+                            for (dataSnapshot in snapshot.children) {
+                                val model = dataSnapshot.getValue(ReportModel::class.java)!!
+                                reportList.add(model)
+                            }
+                            fetchReportsOFUser.value = Resource.Success(reportList)
+                        } else {
+                            fetchReportsOFUser.value = Resource.Success(emptyList())
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        fetchReportsOFUser.value = Resource.Error(error.message)
+                    }
+                })
+        } catch (e: Exception) {
+            fetchReportsOFUser.value = Resource.Error(e.message.toString())
+        }
+
+        return fetchReportsOFUser
+    }
+
+    fun getNotification(): MutableStateFlow<Resource<List<NotificationModel>>> {
+        val notificationForUser =  MutableStateFlow<Resource<List<NotificationModel>>>(Resource.Loading())
+        val uid = firebaseAuth.uid
+        try {
+            firebaseDatabase.getReference(Notification)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        notificationList.clear()
+                        if (snapshot.exists()) {
+                            for (dataSnapshot in snapshot.children) {
+                                val model = dataSnapshot.getValue(NotificationModel::class.java)!!
+                                notificationList.add(model)
+                            }
+                            notificationForUser.value = Resource.Success(notificationList)
+                        } else {
+                            notificationForUser.value = Resource.Success(emptyList())
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        notificationForUser.value = Resource.Error(error.message)
+                    }
+                })
+        } catch (e: Exception) {
+            notificationForUser.value = Resource.Error(e.message.toString())
+        }
+
+        return notificationForUser
+    }
+
 }
 

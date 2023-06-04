@@ -49,7 +49,7 @@ fun DetailShoppingScreen(
     navController: NavController,
     sharedViewModel: ShoppingSharedViewModel,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
 
     val medicineModel = sharedViewModel.medicalModel

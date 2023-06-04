@@ -10,18 +10,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DoctorSharedViewModel @Inject constructor() :BaseViewModal(){
+class DoctorSharedViewModel @Inject constructor() : BaseViewModal() {
 
     var doctorModel by mutableStateOf<DoctorModel?>(null)
         private set
 
-    fun addDoctorModel(model: DoctorModel){
+    fun addDoctorModel(model: DoctorModel) {
         doctorModel = model
     }
+
     var bookingProcessModel by mutableStateOf<BookingProcess?>(null)
         private set
 
-    fun addBookingProcess(model: BookingProcess){
+    fun addBookingProcess(model: BookingProcess) {
         bookingProcessModel = model
     }
 
@@ -29,16 +30,18 @@ class DoctorSharedViewModel @Inject constructor() :BaseViewModal(){
 }
 
 
-
 data class BookingProcess(
-    val model: DoctorModel? = null  ,
-    val bookingType :String = "",
+    val model: DoctorModel? = DoctorModel(),
+    val bookingType: String = "",
     val appointmentType: String = "",
-    val basic_gender:String = "",
-    val height :String = "",
-    val weight :String = "",
-    val age :String = "",
-    val date :String = "",
-    val time :String = "",
-    val paymentOption:String = ""
+    val basic_gender: String = "",
+    val height: String = "",
+    val weight: String = "",
+    val age: String = "",
+    val date: String = "",
+    val time: String = "",
+    val paymentOption: String = "",
+    val patientPhoneNumber: String = "",
+    val status: String = "",
+    var entryId: String = ""
 )

@@ -32,25 +32,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.hanif.medical.R
 import com.hanif.medical.utils.graphs.UIEvent
+import com.hanif.medical.viewmodel.HomeViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun NotificationScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     Scaffold(
-        /*topBar = {
-            CommonAppBar(title = "Notifications",
-
-                 
-                navigationIconAction = { }, actions = { }, actionText = "Clear all"
-            )
-        }*/
     ) {
         Surface(
             Modifier
@@ -58,8 +55,6 @@ fun NotificationScreen(
                 .padding(horizontal = 20.dp)
         ) {
             Column() {
-
-
                 Text(
                     text = "All Notification's",
                     fontWeight = FontWeight.Bold,
@@ -68,23 +63,15 @@ fun NotificationScreen(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                //EmptyScreen()
+                val list = viewModel.notificationState
 
-                val list = listOf(
-                    notificationModel(
-                        R.drawable.baseline_message_24,
-                        "14 Messages",
-                        "Check your Schedule Today"
-                    ), notificationModel(
-                        R.drawable.pills,
-                        "Medicine",
-                        "Check your Schedule Today"
-                    )
-                )
-
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(list) { item ->
-                        NotificationItem(item.image, item.title, item.desc, modifier)
+                if (list.companies.isEmpty()) {
+                    EmptyScreen("no notifications yet", "There is no notification found")
+                } else {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        items(list.companies) { item ->
+                            NotificationItem(item.image, item.title, item.desc, modifier)
+                        }
                     }
                 }
             }
@@ -92,25 +79,19 @@ fun NotificationScreen(
     }
 }
 
-data class notificationModel(
-    @DrawableRes val image: Int, val title: String,
-    val desc: String
-)
-
 @Composable
 fun NotificationItem(
-    @DrawableRes image: Int, title: String,
+    image: String, title: String,
     desc: String, modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20))
-        //  .background(Magnolia),
 
     ) {
         Image(
-            painter = painterResource(id = image),
+            painter = rememberAsyncImagePainter(model = image),
             modifier = modifier
                 .size(60.dp)
                 .padding(10.dp),

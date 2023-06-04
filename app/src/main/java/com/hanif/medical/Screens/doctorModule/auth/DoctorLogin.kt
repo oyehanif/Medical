@@ -106,8 +106,8 @@ fun DoctorLoginScreen(
             Spacer(modifier = Modifier.height(5.dp))
 
             CommonTextFiled(
-                hint = "Hanif@careme.com",
-                TrailingIconImg = R.drawable.email,
+                hint = "90xxxxxxxx",
+                TrailingIconImg = R.drawable.baseline_phone_iphone_24,
                 isTrailingIconClickable = false,
                 trailingIcon = true,
                 text = viewModel.userEmail,
@@ -144,7 +144,7 @@ fun DoctorLoginScreen(
                 errorMes = viewModel.passwordErrMsg,
                 isError = viewModel.passwordValid,
             )
-            Column() {
+            /*Column() {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -177,7 +177,7 @@ fun DoctorLoginScreen(
                         fontSize = 12.sp
                     )
                 }
-            }
+            }*/
 
             Spacer(modifier = Modifier.size(20.dp))
 

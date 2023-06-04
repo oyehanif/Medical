@@ -12,4 +12,9 @@ const val USERS = "Users"
 const val DOCTOR = "DOCTOR"
 const val DOCTOR_AUTH = "DoctorAuth"
 const val Appointment = "Appointment"
+const val Notification = "Notification"
+const val REPORTS = "Reports"
 const val MEDICINE_ORDER = "Medicine Order"
+
+
+lateinit var doctorId: String

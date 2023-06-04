@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -94,6 +95,10 @@ import com.joelkanyi.horizontalcalendar.HorizontalCalendarView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 @Composable
@@ -102,7 +107,8 @@ fun DoctorBookingProcessFirstScreens(
     navController: NavController,
     sharedViewModel: DoctorSharedViewModel,
     modifier: Modifier = Modifier,
-    viewModel: DoctorBookingViewModel = hiltViewModel()
+    viewModel: DoctorBookingViewModel = hiltViewModel(),
+    onPopBackStack: () -> Unit
 ) {
 
     val scaffoldState = rememberScaffoldState()
@@ -129,11 +135,19 @@ fun DoctorBookingProcessFirstScreens(
     }
 
 
-    Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
+    Scaffold(topBar = {
+        CommonAppBar(
+            navigationIconAction = { viewModel.onEvent(DoctorBookingEvent.OnPopBack) },
+            title = "Booking"
+        )
+    }) {
         val innerPadding = it
         val doctorModel = sharedViewModel.doctorModel
         doctorModel?.let {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .imePadding(),) {
                 Card(
                     Modifier
                         .fillMaxWidth()
@@ -179,7 +193,7 @@ fun DoctorBookingProcessFirstScreens(
                                 )
                             }
                             Text(
-                                text = it.fees.toString(),
+                                text = "₹ " + it.fees.toString(),
                                 Modifier.padding(10.dp),
                                 fontWeight = FontWeight.Bold,
                                 fontFamily = DMSans,
@@ -360,6 +374,33 @@ fun DoctorBookingProcessFirstScreens(
                     errorMes = viewModel.ageErrMsg,
                     isError = viewModel.ageValid,
                 )
+
+
+                Text(
+                    text = "patientPhoneNumber",
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .padding(top = 10.dp),
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = DMSans,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 3,
+                    fontSize = 14.sp,
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                CommonTextFiled(
+                    hint = "patientPhoneNumber ",
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                    keyboardType = KeyboardType.Phone,
+                    imeAction = ImeAction.Done, text = viewModel.patientPhoneNumber,
+                    onValueChange = {
+                        viewModel.onEvent(DoctorBookingEvent.OnPatientPhoneNumberChange(it))
+                    },
+                    errorMes = viewModel.patientPhoneNumberMsg,
+                    isError = viewModel.patientPhoneNumberValid,
+                )
                 Spacer(modifier = Modifier.height(20.dp))
 
                 CommonButton("Process",
@@ -390,12 +431,22 @@ fun DoctorBookingProcessFirstScreens(
 fun DoctorBookingProcessSecondScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController, sharedViewModel: DoctorSharedViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onPopBackStack: () -> Unit
 ) {
     val context = LocalContext.current
     val model = sharedViewModel.bookingProcessModel
-    var date = ""
-    Scaffold(topBar = { CommonAppBar(navigationIconAction = { /*TODO*/ }, title = "Booking") }) {
+
+    val c: Date = Calendar.getInstance().getTime()
+    println("Current time => $c")
+    val df = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
+    var date = df.format(c)
+    Scaffold(topBar = {
+        CommonAppBar(
+            navigationIconAction = { navController.popBackStack() },
+            title = "Booking"
+        )
+    }) {
         val innerPadding = it
         Column() {
             Text(
@@ -416,8 +467,7 @@ fun DoctorBookingProcessSecondScreen(
                 selectedCardColor = Color.Blue,
                 unSelectedCardColor = Color.LightGray,
                 onDayClick = { day ->
-                    Toast.makeText(context, day.toString(), Toast.LENGTH_SHORT).show()
-                    date = day.toString()
+                    date = day.fullDate
                 })
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -435,7 +485,7 @@ fun DoctorBookingProcessSecondScreen(
             )
             Spacer(modifier = Modifier.height(10.dp))
             val itemList = remember { AppointmentType() }
-            var selectedAppointmentTime by remember { mutableStateOf("09:00 AM" ) }
+            var selectedAppointmentTime by remember { mutableStateOf("09:00 AM") }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
@@ -477,11 +527,17 @@ fun DoctorBookingProcessSecondScreen(
 fun DoctorBookingProcessThirdScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController, viewmodel: HomeViewModel = hiltViewModel(),
-    sharedViewModel: DoctorSharedViewModel
+    sharedViewModel: DoctorSharedViewModel,
+    onPopBackStack: () -> Unit
 ) {
 
     val model = sharedViewModel.bookingProcessModel
-    Scaffold(topBar = { CommonAppBar(navigationIconAction = { }, title = "Booking") }) {
+    Scaffold(topBar = {
+        CommonAppBar(
+            navigationIconAction = { navController.popBackStack() },
+            title = "Booking"
+        )
+    }) {
         val innerPadding = it
         var selectedOption = ""
         Column(verticalArrangement = Arrangement.SpaceBetween) {
@@ -690,8 +746,8 @@ data class SubsCategories(
 class AppointmentType {
     val AppTYpe = mutableStateListOf(
         SubsCategories("Audio Call", R.drawable.cardiologist, true),
-        SubsCategories("Video Call", R.drawable.cardiologist),
-        SubsCategories("Message", R.drawable.dental),
+        /* SubsCategories("Video Call", R.drawable.cardiologist),
+         SubsCategories("Message", R.drawable.dental),*/
     )
 
     val time = mutableStateListOf(

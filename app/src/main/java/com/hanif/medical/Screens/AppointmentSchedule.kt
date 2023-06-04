@@ -4,6 +4,7 @@ package com.hanif.medical.Screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,11 +30,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +60,9 @@ import com.hanif.medical.Screens.doctor.BookingProcess
 import com.hanif.medical.application.MedicalAppClass
 import com.hanif.medical.ui.theme.DMSans
 import com.hanif.medical.viewmodel.HomeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Preview
@@ -62,6 +70,9 @@ import com.hanif.medical.viewmodel.HomeViewModel
 fun AppointmentScheduleScreen(viewModel: HomeViewModel = hiltViewModel()) {
 //    EmptyScreen("No Appointment Book In Past","appointment schedule not found please book appointment to see history")
     val state = viewModel.appointmentState
+    LaunchedEffect(key1 = viewModel.appointmentState) {
+
+    }
     Scaffold(topBar = {
         CommonAppBar(
             navigationIconAction = { /*TODO*/ },
@@ -73,10 +84,24 @@ fun AppointmentScheduleScreen(viewModel: HomeViewModel = hiltViewModel()) {
             CustomTabs()
 
             LazyColumn() {
+                state.companies.reversed()
                 items(state.companies.size) { i ->
                     val bookingProcessModel: BookingProcess = state.companies[i]
-                    ItemScheduleAppointment(bookingProcessModel) {
-
+                    ItemScheduleAppointment(
+                        bookingProcessModel, isDoctor = false, cancel = {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.insertAppointment(
+                                    bookingProcessModel.copy(status = "cancel"),
+                                    true
+                                )
+                                viewModel.getAppointmentDataList()
+                            }
+                        }
+                    ) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            viewModel.insertAppointment(bookingProcessModel.copy(status = ""), false)
+                            viewModel.getAppointmentDataList()
+                        }
                     }
                 }
             }
@@ -126,8 +151,17 @@ fun CustomTabs() {
 
 
 @Composable
-fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {}) {
-    val context =  LocalContext.current
+fun ItemScheduleAppointment(
+    itemModel: BookingProcess, text: String = "", onValueChange: (String) -> Unit = {},
+    isDoctor: Boolean = false,
+    cancel: () -> Unit = {}, isReportAdd: Boolean = false,
+    secoundButton: () -> Unit = {},
+) {
+    val context = LocalContext.current
+
+    var isReportSectionISVisible by remember {
+        mutableStateOf(false)
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -135,7 +169,7 @@ fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {})
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center, modifier = Modifier.clickable { onClick() }
+            horizontalArrangement = Arrangement.Center,
         ) {
             Image(
                 painter = rememberAsyncImagePainter(itemModel.model!!.image),
@@ -150,12 +184,26 @@ fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {})
             )
 
             Column(Modifier.weight(.5f)) {
-                Text(
-                    text = itemModel.model.name,
-                    fontSize = 20.sp,
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = itemModel.model.name,
+                        fontSize = 20.sp,
 
-                    fontWeight = FontWeight.Bold
-                )
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    AnimatedVisibility(visible = itemModel.status == "cancel") {
+                        Text(
+                            text = "Booking Cancel",
+                            fontSize = 20.sp, color = Color.Red,
+                            fontWeight = FontWeight.Bold, modifier = Modifier.padding(end = 10.dp)
+                        )
+                    }
+
+                }
                 Text(
                     text = itemModel.model.specialize,
                     fontWeight = FontWeight.Medium,
@@ -169,19 +217,25 @@ fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {})
                 )
             }
 
-            Image(
-                Icons.Default.Call, //rememberAsyncImagePainter(itemModel.image) ,
-                modifier = Modifier
-                    .padding(10.dp)
-                    .weight(.2f)
-                    .clip(
-                        CircleShape
-                    )
-                    .clickable {
-                        callerFunction(context,itemModel.model.phone.toString())
-                    },
-                contentDescription = "",
-            )
+            if (itemModel.status != "cancel") {
+                Image(
+                    Icons.Default.Call, //rememberAsyncImagePainter(itemModel.image) ,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .weight(.2f)
+                        .clip(
+                            CircleShape
+                        )
+                        .clickable {
+                            if (isDoctor) {
+                                callerFunction(context, itemModel.model.phone.toString())
+                            } else {
+                                callerFunction(context = context, itemModel.patientPhoneNumber)
+                            }
+                        },
+                    contentDescription = "",
+                )
+            }
         }
 
         Divider(thickness = 1.dp, color = Color.Gray, modifier = Modifier.padding(10.dp))
@@ -193,22 +247,26 @@ fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {})
                 .fillMaxWidth()
                 .padding(bottom = 10.dp), verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = "itemModel.specialize",
-                fontWeight = FontWeight.Medium,
-                fontFamily = DMSans,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .fillMaxWidth(.5f)
-                    .height(42.dp)
-                    .padding(horizontal = 10.dp)
-                    .border(1.dp, Color.Blue, RoundedCornerShape(30))
-                    .padding(10.dp),
-                textAlign = TextAlign.Center
-            )
+            if (itemModel.status != "cancel") {
+                Text(
+                    text = "Cancel Appointment",
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = DMSans,
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .fillMaxWidth(.5f)
+                        .height(42.dp)
+                        .padding(horizontal = 10.dp)
+                        .border(1.dp, Color.Blue, RoundedCornerShape(30))
+                        .padding(10.dp)
+                        .clickable { cancel() },
+                    textAlign = TextAlign.Center
+                )
+            }
 
+            val textOfSecondButton = if (isDoctor) "Add Report" else "Re Book"
             Text(
-                text = "itemModel.specialize",
+                text = textOfSecondButton,
                 fontWeight = FontWeight.Medium,
                 fontFamily = DMSans, color = Color.White,
                 fontSize = 12.sp,
@@ -218,16 +276,53 @@ fun ItemScheduleAppointment(itemModel: BookingProcess, onClick: () -> Unit = {})
                     .height(42.dp)
                     .clip(RoundedCornerShape(30))
                     .background(Color.Blue)
-                    .padding(10.dp),
+                    .padding(10.dp)
+                    .clickable {
+                        if (isDoctor) {
+                            isReportSectionISVisible = !isReportSectionISVisible
+                        } else {
+                            secoundButton()
+                        }
+                    },
                 textAlign = TextAlign.Center
             )
         }
 
+        AnimatedVisibility(visible = isReportSectionISVisible) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp)
+            ) {
+
+                Textarea(text) { onValueChange(it) }
+
+                CommonButton(text = "Add Report") {
+                    secoundButton()
+                    isReportSectionISVisible = !isReportSectionISVisible
+                }
+            }
+        }
 
     }
 }
 
-fun callerFunction(context : Context, phone:String){
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Textarea(text: String, onValueChange: (String) -> Unit) {
+
+    TextField(
+        value = text,
+        onValueChange = { onValueChange(it) }, modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .padding(10.dp)
+            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
+    )
+}
+
+fun callerFunction(context: Context, phone: String) {
     val i = Intent(Intent.ACTION_DIAL)
     val p = "tel:$phone"
     i.data = Uri.parse(p)

@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,7 +65,7 @@ fun AllDoctorScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
     navController: NavController, modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
-    sharedViewModel: DoctorSharedViewModel
+    sharedViewModel: DoctorSharedViewModel,
 ) {
 
     val state = viewModel.state
@@ -146,7 +147,7 @@ fun DoctorItem(itemModel: DoctorModel, onClick: () -> Unit = {}) {
                     .clip(
                         CircleShape
                     )
-                    .size(100.dp)
+                    .size(100.dp), contentScale = ContentScale.Crop
             )
 
             Column() {

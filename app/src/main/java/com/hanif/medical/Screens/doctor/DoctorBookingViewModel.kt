@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.hanif.medical.Screens.validation.ValidateContact
 import com.hanif.medical.Screens.validation.Validations
 import com.hanif.medical.utils.Routes
 import com.hanif.medical.utils.graphs.UIEvent
@@ -44,6 +45,14 @@ class DoctorBookingViewModel @Inject constructor() :
     var ageErrMsg by mutableStateOf("")
         private set
 
+
+    var patientPhoneNumber by mutableStateOf("")
+        private set
+    var patientPhoneNumberValid by mutableStateOf(false)
+        private set
+    var patientPhoneNumberMsg by mutableStateOf("")
+        private set
+
     var tabPage by mutableStateOf(TabPage.Self)
 
     fun onEvent(event: DoctorBookingEvent) {
@@ -74,7 +83,9 @@ class DoctorBookingViewModel @Inject constructor() :
                 }
             }
 
-            DoctorBookingEvent.OnPopBack -> TODO()
+            DoctorBookingEvent.OnPopBack -> {
+                sendUiEvent(UIEvent.PopBackStack)
+            }
             DoctorBookingEvent.OnSubmitClick -> {
                 val validateAge = Validations().heightAndWeightValidation(age, "age")
                 val validateHeight = Validations().heightAndWeightValidation(height, "height")
@@ -110,6 +121,15 @@ class DoctorBookingViewModel @Inject constructor() :
                 weightValid = !result.successful
                 if (!result.successful) {
                     weightErrMsg = result.errorMessage!!
+                }
+            }
+
+            is DoctorBookingEvent.OnPatientPhoneNumberChange ->{
+                patientPhoneNumber = event.phoneNumberChange
+                val result = ValidateContact().execute(patientPhoneNumber)
+                patientPhoneNumberValid = !result.successful
+                if (!result.successful) {
+                    patientPhoneNumberMsg = result.errorMessage!!
                 }
             }
         }
