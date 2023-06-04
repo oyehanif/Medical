@@ -20,5 +20,7 @@ object Routes {
     const val ADD_CARD_SCREEN = "ADD_CARD_SCREEN"
     const val CONFORM_DOCTOR_APPOINTMENT = "CONFORM_DOCTOR_APPOINTMENT"
     const val DOCTOR_LOGIN = "DOCTOR_LOGIN"
+    const val FAQ = "faq"
+    const val DeleteMyAccountScreen = "DeleteMyAccountScreen"
     const val DOCTOR_HOME_SCREEN = "DOCTOR_HOME_SCREEN"
 }

@@ -18,20 +18,35 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController, prefKeys: Int
     ) {
 
         composable(route = AuthScreen.OnBoarding.route) {
-            WelcomeScreen(onNavigate = {navController.navigate(it.route)},navController = navController)
+            WelcomeScreen(
+                onNavigate = { navController.navigate(it.route) },
+                navController = navController
+            )
         }
 
 
         composable(route = AuthScreen.Login.route) {
-            LoginScreen(onNavigate = {navController.navigate(it.route)},navController = navController)
+            LoginScreen(onNavigate = { event ->
+                navController.navigate(event.route) {
+                    popUpTo(Graph.AUTHENTICATION) {
+                        inclusive = true
+                    }
+                }
+            }, navController = navController, onPopBackStack = { navController.popBackStack() })
         }
 
         composable(route = AuthScreen.SignUp.route) {
-            RegisterScreen(onNavigate = {navController.navigate(it.route)},navController = navController, onPopBackStack = {navController.popBackStack()})
+            RegisterScreen(
+                onNavigate = { navController.navigate(it.route) },
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() })
         }
 
         composable(route = AuthScreen.ForgetPassword.route) {
-            ForgetPasswordScreen(onNavigate = {navController.navigate(it.route)},navController = navController, onPopBackStack = {navController.popBackStack()})
+            ForgetPasswordScreen(
+                onNavigate = { navController.navigate(it.route) },
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() })
         }
     }
 }

@@ -6,7 +6,148 @@
     <string name="exipry_date">Expiry date</string>
     <string name="cvc">CVC</string>
     <string name="save">save</string>
+    <string name="on_boarding_title_1">All Subscriptions In One Place Now!</string>
+    <string name="on_boarding_title_2">Streamline Your Subscriptions, Simplify Your Life!</string>
+    <string name="on_boarding_title_3">Manage Your Subscriptions Easily &amp; Fast!</string>
+    <string name="on_boarding_desc_1">Track and manage your all subscriptions without any hassle from anywere anytime</string>
+    <string name="on_boarding_desc_2">For Subscription it is a lot of cost, you need to check it and make it perfect</string>
+    <string name="on_boarding_desc_3">Divide them into categories, set notifications, sync data between devices &amp; add custom services</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+    <string name="welcome_back">Welcome Back! 👋</string>
     <string name="login_txt"><![CDATA[Please Enter Your Email & Password to Login.]]></string>
+    <string name="enter_your_email">Enter Your Email</string>
+    <string name="sign_in">Sign In</string>
+    <string name="create_an_account">Create an Account</string>
+    <string name="please_enter_your_details_below">Please Enter Your Details Below</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="register_term_condition_txt"><![CDATA[By creating an account you have to agree with our Terms & conditions.]]></string>
+    <string name="already_have_an_account">"Already have an account? "</string>
+    <string name="check_your_email">Check Your Email</string>
+    <string name="you_will_be_receiving_a_confirmation_email_please_check_your_email">"You will be receiving a confirmation email. Please check your email. "</string>
+    <string name="did_n_t_get_email">"Didn’t get Email? "</string>
+    <string name="resend">Resend</string>
+    <string name="enter_your_phone">Enter Your Phone</string>
+    <string name="next_billing">Next Billing</string>
+    <string name="price">Price</string>
+    <string name="hint_1_080">₹ 1,080</string>
+    <string name="hint_21_04_2023">21/04/2023</string>
+    <string name="billing_date">Billing Date</string>
+    <string name="category">Category</string>
+    <string name="name">Name</string>
+    <string name="electricity_bill">Electricity Bill</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="faq_s">FAQ\'s</string>
+    <string name="logout">Logout</string>
+    <string name="delete_my_account">Delete My Account</string>
+    <string name="theme">Theme</string>
+    <string name="notification">Notification</string>
+    <string name="currency">Currency</string>
+    <string name="empty_notification_desc">We’ll notify you once we have \n something for you</string>
+    <string name="no_notifications_yet">No Notifications yet!</string>
+
+    <!--login screen string-->
+    <string name="welcome_to">Welcome to</string>
+    <string name="welcome_to_subs_alert">SubsAlert \uD83D\uDC4B</string>
+    <string name="log_in">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="or_continue_with">or continue with</string>
+    <string name="remember_me">Remember Me!</string>
+
+    <!--registration screen string-->
+    <string name="name_hint">john Smith</string>
+    <string name="email_hint">johnsmit007@example.com</string>
+    <string name="input_password">Enter Your Password</string>
+    <string name="password_hint">************</string>
+
+    <!--home screen string-->
+    <string name="monthly_subscription">Monthly Subscriptions</string>
+    <string name="default_expensive">₹ 0.0/m</string>
+    <string name="search_subscription">Search Subscriptions</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="see_all">See all</string>
+    <string name="default_rupees">₹799</string>
+    <string name="amazon_prime">Amazon Prime</string>
+    <string name="annual">Annual</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="remaining_days">30</string>
+    <string name="month_left">Month Left</string>
+    <string name="days_left">Days Left</string>
+    <string name="active_subscriptions">Active Subscriptions</string>
+    <string name="netflix">Netflix</string>
+    <string name="expenses">Expenses</string>
+    <string name="start_date">24, April 2023</string>
+    <string name="retry">Retry</string>
+    <string name="notes_hint">Write Notes Here.</string>
+
+    <!--analysis screen-->
+    <string name="analysis_header">Analysis</string>
+    <string name="expenditure">Expenditure</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="usage_details">Usage Details</string>
+
+    <!--manual screen-->
+    <string name="recurring">Recurring</string>
+    <string name="one_time">One Time</string>
+    <string name="skip">skip</string>
+    <string name="end_date">End Date</string>
+    <string name="reminders">Reminders</string>
+    <string name="billing_cycle">Billing Cycle</string>
+    <string name="notes_optional">Notes (Optional)</string>
+    <string name="add_subscription">Add Subscription</string>
+    <string name="gender">Gender</string>
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="select_reason">Select Reason</string>
+    <string name="i_don_t_want_to_use_sub_alert">i don\'t want to use SubsAlert</string>
+    <string name="i_have_another_account">i have another account</string>
+    <string name="privacy_concerns">Privacy Concerns</string>
+    <string name="too_many_ads">Too many ads</string>
+    <string name="others">Others</string>
+    <string name="anything_else_you_want_to_add">Anything else you want to add</string>
+    <string name="delete_my_account_note_hint">Write some suggest to improve our app.</string>
+    <string name="note_alert">*Your account will be permanently removed from the application. All your data will be lost.</string>
+    <string name="log__out">Log out</string>
+    <string name="are_you_sure_you_want_to_log_out">Are you sure you want to log out ?</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes_logout">Yes, Logout</string>
+    <string name="add_subscription_screen">Add Subscription</string>
+    <string name="add_manual">Add Manually</string>
+
+    <!--currency screen-->
+    <string name="currency_header">Currency</string>
+    <string name="search_currency_here">Search currency here…</string>
+
+    <!--add manual screen and add subscription screen-->
+    <string name="subscriptions">Subscriptions</string>
+    <string name="default_monthly">Monthly</string>
+    <string name="default_same_day">Same Day</string>
+
+    <!--FAQ screen-->
+    <string name="faq">FAQs</string>
+    <string name="what_do_you_want_to_know">What do you want to know?</string>
+    <string name="how_can_we_help">How can we help?</string>
+    <string name="successfully_added">Successfully Added</string>
+    <string name="your_subscription_added_successfully">Your subscription added successfully.</string>
+    <string name="enter_your_password">Enter Your Password</string>
+
+    <string-array name="billing_cycle">
+        <item>Monthly</item>
+        <item>Quarterly</item>
+        <item>Yearly</item>
+    </string-array>
+
+    <string-array name="reminders">
+        <item>Same Day</item>
+        <item>Before 1 Day</item>
+        <item>Before 2 Day</item>
+        <item>Before 3 Day</item>
+        <item>Before 4 Day</item>
+        <item>Before 5 Day</item>
+        <item>Before 6 Day</item>
+        <item>Before 7 Day</item>
+    </string-array>
+
 
     <string-array name="gender">
         <item>Male</item>

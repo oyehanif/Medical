@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.hanif.medical.R
 import com.hanif.medical.Screens.commo.CommonProgress
+import com.hanif.medical.Screens.commo.CommonTextFiled
 import com.hanif.medical.models.Resource
 import com.hanif.medical.navigation.Screen
 import com.hanif.medical.utils.CustomSpacer
@@ -80,14 +81,14 @@ fun ForgetPasswordScreen(
         CustomSpacer(10.dp)
 
         val email =
-            commonTextFiled(hint = "Email", icon = Icons.Default.Email, imeAction = ImeAction.Next)
+            CommonTextFiled(hint = "Email", icon = Icons.Default.Email, imeAction = ImeAction.Next)
 
         CustomSpacer(20.dp)
         val scope = rememberCoroutineScope()
         CommonButton("Send", modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 30.dp), shape = RoundedCornerShape(50), onClick = {
-            viewModel.forgetPassword(email)
+           // viewModel.forgetPassword(email)
             })
 
     }

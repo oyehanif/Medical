@@ -8,8 +8,10 @@ import androidx.navigation.compose.*
 import com.hanif.medical.Screens.AllDoctorScreen
 import com.hanif.medical.Screens.AppointmentScheduleScreen
 import com.hanif.medical.Screens.CardPaymentScreen
+import com.hanif.medical.Screens.DeleteMyAccountScreen
 import com.hanif.medical.Screens.DetailDoctorScreen
 import com.hanif.medical.Screens.DetailShoppingScreen
+import com.hanif.medical.Screens.FAQScreen
 import com.hanif.medical.Screens.HomeScreen
 import com.hanif.medical.Screens.OrderSuccessfulScreen
 import com.hanif.medical.Screens.ReportScreen
@@ -246,7 +248,7 @@ fun HomeNavGraph(navController: NavHostController) {
             EditProfileScreen()
         }*/
 
-        composable(route =Routes.DOCTOR_LOGIN ) {
+        composable(route = Routes.DOCTOR_LOGIN) {
             DoctorLoginScreen(
                 onNavigate = { event -> navController.navigate(event.route) },
                 navController = navController,
@@ -254,7 +256,22 @@ fun HomeNavGraph(navController: NavHostController) {
             )
         }
 
-        composable(route =Routes.DOCTOR_HOME_SCREEN ) {
+        composable(route = Routes.FAQ) {
+            FAQScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() }
+            )
+        }
+        composable(route = Routes.DeleteMyAccountScreen) {
+            DeleteMyAccountScreen(
+                onNavigate = { event -> navController.navigate(event.route) },
+                navController = navController,
+                onPopBackStack = { navController.popBackStack() }
+            )
+        }
+
+        composable(route = Routes.DOCTOR_HOME_SCREEN) {
             DoctorHomeScreen()
         }
     }

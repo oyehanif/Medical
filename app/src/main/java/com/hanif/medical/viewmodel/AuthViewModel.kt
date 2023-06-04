@@ -42,7 +42,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun register(
+   /* fun register(
         name: String,
         email: String,
         phone: String,
@@ -52,7 +52,7 @@ class AuthViewModel @Inject constructor(
         val result = authRepository.register(name, email, phone, password)
         _registerFlow.value = result
     }
-
+*/
     fun login(
         email: String,
         password: String,
@@ -64,11 +64,11 @@ class AuthViewModel @Inject constructor(
         }
         _loginFlow.value = Resource.Loading()
 
-        val result = authRepository.login(email, password)
-        /*if (isRemember){
+       /* val result = authRepository.login(email, password)
+        *//*if (isRemember){
             dataStore.
-        }*/
-        _loginFlow.value = result
+        }*//*
+        _loginFlow.value = result*/
     }
 
     fun logout() {

@@ -18,16 +18,21 @@ class AuthRepository(
     private val firebaseDatabase: FirebaseDatabase
 ) {
 
-    suspend fun login(email: String, password: String): Resource<FirebaseUser> {
-        return try {
-            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
-            Resource.Success(result.user!!)
-        } catch (e: FirebaseAuthException) {
-            Resource.Error(e.message.toString())
-        } catch (e: FirebaseException) {
-            Resource.Error(e.message.toString())
-        } catch (e: Exception) {
-            Resource.Error(e.message.toString())
+    suspend fun login(loginRequest: LoginRequest): Flow<Resource<FirebaseUser>> {
+        return flow {
+            try {
+                val result = firebaseAuth.signInWithEmailAndPassword(
+                    loginRequest.email,
+                    loginRequest.password
+                ).await()
+                emit(Resource.Success(result.user!!))
+            } catch (e: FirebaseAuthException) {
+                emit(Resource.Error(e.message.toString()))
+            } catch (e: FirebaseException) {
+                emit(Resource.Error(e.message.toString()))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.message.toString()))
+            }
         }
     }
 
@@ -38,18 +43,20 @@ class AuthRepository(
         email: String,
         phone: String,
         password: String
-    ): Resource<FirebaseUser> {
-        return try {
-            val user = UserModel(name, email, phone, password)
-            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            firebaseDatabase.getReference(USERS).child(result.user!!.uid).setValue(user).await()
-            Resource.Success(result.user!!)
-        } catch (e: FirebaseAuthException) {
-            Resource.Error(e.message.toString())
-        } catch (e: FirebaseException) {
-            Resource.Error(e.message.toString())
-        } catch (e: Exception) {
-            Resource.Error(e.message.toString())
+    ): Flow<Resource<FirebaseUser>> {
+        return flow {
+            try {
+                val user = UserModel(name, email, phone, password)
+                val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+                firebaseDatabase.getReference(USERS).child(result.user!!.uid).setValue(user).await()
+                emit(Resource.Success(result.user!!))
+            } catch (e: FirebaseAuthException) {
+                emit( Resource.Error(e.message.toString()))
+            } catch (e: FirebaseException) {
+                emit( Resource.Error(e.message.toString()))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.message.toString()))
+            }
         }
     }
 
@@ -68,3 +75,9 @@ class AuthRepository(
         }
     }
 }
+
+data class LoginRequest(
+    val email: String,
+    val password: String,
+    val isCheck: Boolean = false,
+)

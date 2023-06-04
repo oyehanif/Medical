@@ -1,52 +1,256 @@
 package com.hanif.medical.Screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import com.hanif.medical.R
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.hanif.medical.models.Resource
-import com.hanif.medical.utils.CustomSpacer
-import com.hanif.medical.utils.graphs.AuthScreen
-import com.hanif.medical.utils.graphs.Graph
 import com.hanif.medical.utils.graphs.UIEvent
-import com.hanif.medical.viewmodel.AuthViewModel
-import kotlinx.coroutines.launch
+import androidx.compose.foundation.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.*
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import com.hanif.medical.LoginViewModel
+import com.hanif.medical.Screens.auth.AuthEvent
+import com.hanif.medical.Screens.commo.CommonAppBar
+import com.hanif.medical.Screens.commo.CommonProgress
+import com.hanif.medical.Screens.commo.CommonTextFiled
+import com.hanif.medical.Screens.commo.CommonTextFiledForPassword
+import com.hanif.medical.ui.theme.DMSans
+import com.hanif.medical.ui.theme.RomanSilver
+
+@Composable
+fun LoginScreen(
+    onPopBackStack: () -> Unit,
+    onNavigate: (UIEvent.Navigate) -> Unit,
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
+
+    val viewModel: LoginViewModel = hiltViewModel()
+    val scaffoldState = rememberScaffoldState()
+    val state = viewModel.state
 
 
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                UIEvent.PopBackStack -> onPopBackStack()
+                is UIEvent.Navigate -> {
+                    onNavigate(event)
+                }
+
+                is UIEvent.ShowSnackbar -> {
+                    scaffoldState.snackbarHostState.showSnackbar(
+                        message = event.message, actionLabel = event.action
+                    )
+                }
+
+                else -> Unit
+            }
+        }
+    }
+
+    Scaffold(
+        scaffoldState = scaffoldState,
+        topBar = {
+            CommonAppBar(
+                navigationIconAction = { viewModel.onEvent(AuthEvent.OnPopBack()) }
+            )
+        }
+    ) { paddingValues ->
+
+        val innerPadding = paddingValues
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .fillMaxSize(),
+        ) {
+
+
+            Text(
+                text = "Welcome Back! \uD83D\uDC4B",
+                fontFamily = DMSans,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp, color = MaterialTheme.colors.secondary
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = stringResource(R.string.login_txt),
+                fontFamily = DMSans,
+                fontWeight = FontWeight.Medium,
+                color = RomanSilver,
+                fontSize = 16.sp,
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text ="Enter Your Email",
+                fontFamily = DMSans,
+                fontWeight = FontWeight(400),
+                fontSize = 14.sp, color = MaterialTheme.colors.secondary
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            CommonTextFiled(
+                hint = "Jhon Smit",
+                TrailingIconImg = R.drawable.email,
+                isTrailingIconClickable = false,
+                trailingIcon = true,
+                text = viewModel.emailState.text,
+                onValueChange = { email -> viewModel.onEvent(AuthEvent.OnEmailChange(email)) },
+                imeAction = ImeAction.Next,
+                errorMes = viewModel.emailState.errorMes,
+                isError = viewModel.emailState.isError,
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text ="Enter Your Password",
+                fontFamily = DMSans,
+                fontWeight = FontWeight(400),
+                fontSize = 14.sp, color = MaterialTheme.colors.secondary
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            CommonTextFiledForPassword(
+                hint = "************",
+                isTrailingIconClickable = true,
+                trailingIcon = true,
+                text = viewModel.passwordState.text,
+                onValueChange = { password ->
+                    viewModel.onEvent(
+                        AuthEvent.OnPasswordChange(
+                            password
+                        )
+                    )
+                },
+                imeAction = ImeAction.Done,
+                errorMes = viewModel.passwordState.errorMes,
+                isError = viewModel.passwordState.isError,
+            )
+           /* Column() {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(
+                            checked = viewModel.isRememberValid,
+                            onCheckedChange = { isChecked ->
+                                viewModel.onEvent(AuthEvent.OnCheckChange(isChecked))
+                            },
+                            enabled = true,
+                        )
+                        Text(
+                            text = "Remember Me!",
+                            fontFamily = DMSans,
+                            fontWeight = FontWeight.Medium,
+                            color = RomanSilver,
+                            fontSize = 12.sp
+                        )
+                    }
+                    Text(
+                        text = "Forgot Password?",
+                        fontFamily = DMSans,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.sp,modifier =Modifier.clickable { viewModel.onEvent(event = AuthEvent.OnForgetPasswordClick) }
+                    )
+                }
+            }*/
+
+            Spacer(modifier = Modifier.size(20.dp))
+
+            Button(
+                onClick = {
+                    viewModel.onEvent(AuthEvent.OnSubmitClick(viewModel.emailState.text))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .clip(shape = CircleShape),
+
+            ) {
+                Text(
+                    text ="Sign In",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(500),
+                    fontFamily = DMSans,
+                    color = White
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Don’t have an account? ",
+                    fontFamily = DMSans,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary,
+                    fontSize = 14.sp
+                )
+                Text(text = "Sign up.",
+                    fontFamily = DMSans,
+                    fontWeight = FontWeight.Medium,
+                    color = Blue,
+                    fontSize = 14.sp,
+                    modifier = modifier.clickable { viewModel.onEvent(AuthEvent.OnSignUpClick) })
+            }
+        }
+
+        if (state.isLoading) {
+            CommonProgress()
+        }
+    }
+}
+
+@Composable
+fun CommonButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    shape: Shape = CutCornerShape(10), onClick: () -> Unit,
+) {
+    Button(modifier = modifier, onClick = { onClick() }, shape = shape) {
+        Text(text = text)
+    }
+}
+
+/*
 @Composable
 fun LoginScreen(
     onNavigate: (UIEvent.Navigate) -> Unit,
@@ -141,9 +345,11 @@ fun LoginScreen(
                 is Resource.Loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 is Resource.Success -> {
                     LaunchedEffect(Unit) {
-                        /*navController.navigate(Screen.Home.route) {
+                        */
+/*navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Home.route) { inclusive = true }
-                        }*/
+                        }*//*
+
 
                         onNavigate(UIEvent.Navigate(Graph.HOME))
                     }
@@ -185,13 +391,15 @@ fun MultiStyleText(
     )
 }
 
+*/
 /*
 @Preview
 @Composable
 fun CommonButtonPreview() {
     CommonButton("demo")
 }
-*/
+*//*
+
 
 
 @Composable
@@ -247,3 +455,4 @@ fun LoginScreenPrev() {
 }
 
 
+*/
