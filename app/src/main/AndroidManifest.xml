@@ -21,6 +21,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CustomSplashScreenTheme"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8809779548160003~4031624329" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

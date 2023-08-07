@@ -214,7 +214,7 @@ fun CardNumber(number :String ="",onValueChange :(String) -> Unit={}) {
                 CardType.MAESTRO -> R.drawable.maestro
                 CardType.DINNERS_CLUB -> R.drawable.dinners_club
                 CardType.DISCOVER -> R.drawable.discover
-                CardType.JCB -> R.drawable.jcb
+                CardType.JCB -> R.drawable.discover
                 else -> R.drawable.ic_launcher_background
             }
             Image(

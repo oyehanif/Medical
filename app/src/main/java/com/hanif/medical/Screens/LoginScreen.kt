@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import com.hanif.medical.BannerAd
 import com.hanif.medical.LoginViewModel
 import com.hanif.medical.Screens.auth.AuthEvent
 import com.hanif.medical.Screens.commo.CommonAppBar
@@ -88,7 +89,7 @@ fun LoginScreen(
                 .fillMaxSize(),
         ) {
 
-
+            BannerAd(adId = "ca-app-pub-3940256099942544/6300978111")
             Text(
                 text = "Welcome Back! \uD83D\uDC4B",
                 fontFamily = DMSans,
